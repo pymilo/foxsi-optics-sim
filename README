@@ -4,10 +4,12 @@ FOXSISIM: FOXSI Optics Simulation Tool
 To do complete install:
 sudo python setup.py install
 
-
 To install in current directory:
 python setup.py install --home=.
 
+or using pip while immediately outside the directory
+
+pip install -e foxsi-optics-sim
 
 When installing to local directory, you need to update PATH 
 and PYTHONPATH variables in order to use the foxsisim tools:
