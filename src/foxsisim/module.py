@@ -139,7 +139,8 @@ class Module:
                     # update ray
                     ray.pos = ray.getPoint(bestSol[2])
                     ray.bounces += 1
-                    x = reflect(ray.ori,bestSurf.getNormal(bestSol[0],bestSol[1]))
+                    x = reflect(ray.ori,bestSurf.getNormal(bestSol[0],bestSol[1]),ray.energy)
+                    
                     # if reflected
                     if x is not None:
                         ray.ori = x / norm(x) # update ori to unit vector reflection

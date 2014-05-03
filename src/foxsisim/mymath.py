@@ -7,9 +7,13 @@ from math import pi,acos,atan,tan
 import numpy as np
 from numpy import dot
 from numpy.linalg import norm
+from numpy.random import random
+from reflectivity import Reflectivity
+from scipy import interpolate
 
 halfpi = pi/2
 dtf = np.dtype('f8')
+mirror_reflectivity = Reflectivity()
 
 def angleBetweenVectors(a,b):
     '''
@@ -17,14 +21,31 @@ def angleBetweenVectors(a,b):
     '''
     return acos(dot(a,b)/(norm(a)*norm(b)))
 
-def reflect(x,normal):
+def reflect(x,normal,energy):
     '''
     Takes a vector and reflects it in relation to a normal
     '''
     # if the angle of incidence is greater than 90 deg, return None
-    if acos(dot(-x,normal)/(norm(x)*norm(normal))) > halfpi:
+    incident_angle = angle_of_incidence(x, normal)
+    graze_angle = halfpi - incident_angle    
+    if incident_angle > halfpi:
+        return None
+    if random(1)[0] > mirror_reflectivity.value(energy, np.rad2deg(graze_angle)):
         return None
     return x-2*dot(x,normal)*normal
+
+def angle_of_incidence(x, normal):
+    '''
+    Calculate the angle of incidence between a vector and the normal
+    '''
+    return acos(dot(-x,normal)/(norm(x)*norm(normal)))
+
+def grazing_angle(x, normal):
+    '''
+    Calculate the grazing angle between a vector and the surface. The complement to the
+    angle of incidence.
+    '''
+    return halfpi - acos(dot(-x,normal)/(norm(x)*norm(normal)))
 
 def calcShellAngle(radius, focalLength):
     '''
@@ -48,5 +69,23 @@ def calcShellRadius(angle, focalLength):
     else:
         return tan(angle)*focalLength*4
     
-    
-    
+def genCustomRands(x, y, n):
+    '''
+    Generate n random numbers given a distribution (x, y)
+    '''
+    last_index = 0
+    not_done = True
+    result = np.zeros(n)
+    f = interpolate.interp1d(x, y, kind = 3)
+    while not_done: 
+        xtry = random(20*n) * (x.max() - x.min()) + x.min()
+        ytry = random(20*n) * (y.max() - y.min()) + y.min()
+        #now fill the array
+        good_index = ytry < f(xtry)
+        good_count = np.count_nonzero(good_index)
+        if good_count + last_index >= n:
+            not_done = False
+            good_count = n - last_index
+        result[last_index:good_count+last_index] = xtry[good_index][0:good_count]
+        last_index += good_count
+    return result

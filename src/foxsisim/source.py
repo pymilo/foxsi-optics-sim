@@ -10,6 +10,8 @@ from numpy.linalg import norm
 from random import random
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
+from numpy.random import ranf
+from mymath import genCustomRands
 
 dt = np.dtype('f8')
 
@@ -29,7 +31,8 @@ class Source(Plane):
                  normal = [0,0,1], 
                  type = 'atinf', 
                  color = [1,1,1], 
-                 pixels = None
+                 pixels = None,
+                 spectrum = None
                  ):
         '''
         Constructor
@@ -42,6 +45,7 @@ class Source(Plane):
             type:      'atinf', 'point', or 'nonpoint'
             color:     color of projected rays
             pixels:    optional numpy array of pixel colors (W x H x 3)
+            spectrum:  optional numpy array (2xN) of energy spectrum 
         '''
         # normal should be length 1
         normal = normal/norm(normal)
@@ -88,6 +92,22 @@ class Source(Plane):
         '''
         plt.figure(figureNum)
         plt.imshow(self.pixels)
+    
+    def loadSpectrum(self, spectrum):
+        '''Loads an array as the energy spectrum for the source
+        '''
+        if spectrum.shape[0] != 2:
+            raise ValueError("Spectrum array must be 2 x N Numpy array")
+        if np.any(spectrum < 0):
+            raise ValueError("Spectrum cannot contain any negative values")
+        self.spectrum = spectrum
+    
+    def plotSpectrum(self, figureNum = 1):
+        '''
+        Display the source spectrum to screen
+        '''
+        plt.figure(figureNum)
+        plt.plot(self.spectrum[0,:], self.spectrum[1,:])
         
     def colorAtPoint(self,points):
         '''
@@ -121,7 +141,7 @@ class Source(Plane):
         # return color
         return colors
     
-    def generateRays(self, targetFunc, n, grid = None):
+    def generateRays(self, targetFunc, n, grid = None, energy_dist = None):
         '''
         Returns an array of rays, located at a source and pointed to valid target
         points (on a module/shell/segment).
@@ -130,6 +150,7 @@ class Source(Plane):
             targetFunc:    a function that generates points on the target plane (ex: module.targetFront)
             n:             the number of random rays to generate
             grid:          the dimensions of a grid of points to generate (alternative to specifying n)
+            energy_dist    energy distribution to sample from for ray
         '''
         # create rays array
         if grid is None:
@@ -214,9 +235,14 @@ class Source(Plane):
                 ray.src = ray.pos
         
         else: raise ValueError('invalid source type')
-          
+        
         # tag the rays as coming from this source
         for ray in rays: ray.tag = self
-            
+        
+        # add energies to rays
+        if self.spectrum:
+            for ray in rays:
+                ray.energy = genCustomRands(self.spectrum[0,:], self.spectrum[1,:],1)
+                        
         return rays
 
