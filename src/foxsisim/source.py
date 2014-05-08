@@ -240,7 +240,7 @@ class Source(Plane):
         for ray in rays: ray.tag = self
         
         # add energies to rays
-        if self.spectrum:
+        if self.spectrum is not None:
             for ray in rays:
                 ray.energy = genCustomRands(self.spectrum[0,:], self.spectrum[1,:],1)
                         

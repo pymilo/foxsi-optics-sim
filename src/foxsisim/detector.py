@@ -23,7 +23,7 @@ class Detector(Plane):
                  normal = [0,0,1], 
                  reso = [256,256],
                  pixels = None,
-                 freqs = None
+                 freqs = None,
                  ):
         '''
         Constructor
@@ -69,10 +69,11 @@ class Detector(Plane):
         self.freqs = freqs
         self.rays = []
                 
-    def plotImage(self,axes):
+    def plotImage(self,axes, energy_range=None):
         '''
         Displays the source background to screen
         '''
+        self._makeImage(energy_range = energy_range)
         axes.imshow(self.pixels)
         
     def catchRays(self,rays):
@@ -81,15 +82,7 @@ class Detector(Plane):
         plane. If the ray collides, the corresponding pixel in the detector is
         colored. The attribute 'freqs' counts the number of times a pixel is hit.
         '''
-        # vars
-        dims = self.pixels.shape
-        colorSum = np.zeros(dims,np.dtype('f4'))
-        counts = np.zeros(dims[0:2],np.dtype('u4'))
-        len1 = norm(self.ax1) # length of rectangle side 1
-        len2 = norm(self.ax2) # length of rectangle side 2
-        unit1 = self.ax1 / len1 # ax1 unit vector
-        unit2 = self.ax2 / len2 # ax2 unit vector
-        
+                
         # for each ray
         for ray in rays:
             # if ray hasn't hit anything yet
@@ -104,25 +97,44 @@ class Detector(Plane):
                     ray.bounces += 1
                     self.rays.append(ray)
                     
-                    # find pixel
-                    disp = ray.pos - self.origin
-                    scale1 = np.dot(disp,unit1)/len1 # length ratio of projection to ax1
-                    scale2 = np.dot(disp,unit2)/len2 # length ratio of projection to ax2
-                    xpix = dims[1] * scale1
-                    ypix = dims[0] * (1 - scale2)
-                    
-                    # get color
-                    if isinstance(ray.tag,Source):
-                        colorSum[ypix,xpix,:] += ray.tag.colorAtPoint([ray.src])
-                    else: 
-                        colorSum[ypix,xpix,:] += np.array((1,1,1)) # assume white
+    def _makeImage(self, energy_range=None):
+    
+        # vars
+        dims = self.pixels.shape
+        colorSum = np.zeros(dims,np.dtype('f4'))
+        counts = np.zeros(dims[0:2],np.dtype('u4'))
+        len1 = norm(self.ax1) # length of rectangle side 1
+        len2 = norm(self.ax2) # length of rectangle side 2
+        unit1 = self.ax1 / len1 # ax1 unit vector
+        unit2 = self.ax2 / len2 # ax2 unit vector
+
+        for ray in self.rays:
+             # find pixel
+            disp = ray.pos - self.origin
+            scale1 = np.dot(disp,unit1)/len1 # length ratio of projection to ax1
+            scale2 = np.dot(disp,unit2)/len2 # length ratio of projection to ax2
+            xpix = dims[1] * scale1
+            ypix = dims[0] * (1 - scale2)
+            
+            # get color
+            if isinstance(ray.tag,Source):
+                colorSum[ypix,xpix,:] += ray.tag.colorAtPoint([ray.src])
+            else: 
+                colorSum[ypix,xpix,:] += np.array((1,1,1)) # assume white
+            
+            if energy_range is not None:
+                if ((ray.energy < energy_range[1]) & (ray.energy > energy_range[0])):
                     counts[ypix,xpix] += 1
+            else:
+                counts[ypix,xpix] += 1
             
         # average the colors
         for x in range(dims[0]):
             for y in range(dims[1]):
                 if counts[x,y] > 0:
-                    total = self.freqs[x,y] + counts[x,y]
-                    self.pixels[x,y] = (self.freqs[x,y]*self.pixels[x,y] + colorSum[x,y]) / total
+                    #total = self.freqs[x,y] + counts[x,y]
+                    #self.pixels[x,y] = (self.freqs[x,y]*self.pixels[x,y] + colorSum[x,y]) / total
+                    total = counts[x,y]
+                    self.pixels[x,y] = colorSum[x,y] / total
                     self.freqs[x,y] = total
 

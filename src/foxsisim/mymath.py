@@ -76,7 +76,7 @@ def genCustomRands(x, y, n):
     last_index = 0
     not_done = True
     result = np.zeros(n)
-    f = interpolate.interp1d(x, y, kind = 3)
+    f = interpolate.interp1d(x, y, kind = 2)
     while not_done: 
         xtry = random(20*n) * (x.max() - x.min()) + x.min()
         ytry = random(20*n) * (y.max() - y.min()) + y.min()
