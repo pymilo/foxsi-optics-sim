@@ -53,21 +53,21 @@ class Detector(Plane):
         # calc origin
         origin = np.array(center) - (0.5*ax1 + 0.5*ax2)
         
+        # instantiate
+        Plane.__init__(self,origin,ax1,ax2)
+        self.center = np.array(center,dtf)
+        self.reso = reso
+        self.pixels = pixels
+        self.freqs = freqs
+        self.rays = []
+        
         # bring in pixels
         if pixels is None:
-            pixels = np.zeros((reso[0],reso[1],3),np.dtype('f4')) # rgb colors in float form
-            freqs = np.zeros(reso,np.dtype('u4')) # number of times a pixel is hit by a ray
+            self._initDetectorImage()
         elif freqs is None: 
             raise ValueError('must pass freqs when passing pixels')
         elif pixels.shape[0:2] != freqs.shape: 
             raise ValueError('pixels and freqs arrays do not correspond')
-        
-        # instantiate
-        Plane.__init__(self,origin,ax1,ax2)
-        self.center = np.array(center,dtf)
-        self.pixels = pixels
-        self.freqs = freqs
-        self.rays = []
                 
     def plotImage(self,axes, energy_range=None):
         '''
@@ -75,7 +75,27 @@ class Detector(Plane):
         '''
         self._makeImage(energy_range = energy_range)
         axes.imshow(self.pixels)
+        axes.set_title(str(energy_range[0]) + ' - ' + str(energy_range[1]) + ' keV')
+        axes.set_ylabel("Pixels")
+        axes.set_xlabel("Pixels")
         
+    def plotSpectrum(self, axes, roi=None, dE=1, range=[0,20]):
+        '''
+        Plot the spectrum of the rays in a region of interest (if available, not yet implemented) or 
+        across the entire detector
+        '''
+        energies = [ray.energy[0] for ray in self.rays]
+        axes.hist(energies, bins=(range[1]-range[0])/dE, range=range)
+        axes.set_xlabel("Energy [keV]")
+        axes.set_title("Spectrum")
+        
+    def _initDetectorImage(self):
+    
+        pixels = np.zeros((self.reso[0],self.reso[1],3),np.dtype('f4')) # rgb colors in float form
+        freqs = np.zeros(self.reso,np.dtype('u4')) # number of times a pixel is hit by a ray
+        self.pixels = pixels
+        self.freqs = freqs
+    
     def catchRays(self,rays):
         '''
         Takes an array of rays and tests each for collision with the detector
@@ -96,9 +116,11 @@ class Detector(Plane):
                     ray.dead = True
                     ray.bounces += 1
                     self.rays.append(ray)
-                    
+
     def _makeImage(self, energy_range=None):
-    
+        '''
+        Bin the rays that were caught by the detector to make an image
+        '''
         # vars
         dims = self.pixels.shape
         colorSum = np.zeros(dims,np.dtype('f4'))
@@ -107,6 +129,8 @@ class Detector(Plane):
         len2 = norm(self.ax2) # length of rectangle side 2
         unit1 = self.ax1 / len1 # ax1 unit vector
         unit2 = self.ax2 / len2 # ax2 unit vector
+
+        self._initDetectorImage()
 
         for ray in self.rays:
              # find pixel
