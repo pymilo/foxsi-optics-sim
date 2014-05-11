@@ -82,7 +82,7 @@ class Detector(Plane):
         axes.set_ylabel("Pixels")
         axes.set_xlabel("Pixels")
 
-    def plotSpectrum(self, axes, roi=None, dE=1, range=[0,20]):
+    def plotSpectrum(self, axes, roi=None, dE=1, range=[0, 20]):
         '''
         Plot the spectrum of the rays in a region of interest (if available,
         not yet implemented) or across the entire detector
