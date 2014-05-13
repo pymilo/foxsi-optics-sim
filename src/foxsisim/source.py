@@ -11,6 +11,7 @@ from random import random
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from mymath import genCustomRands
+from scipy.integrate import quad
 
 dt = np.dtype('f8')
 
@@ -77,15 +78,18 @@ class Source(Plane):
         self.type = type
         self.color = np.array(color, np.dtype('f4'))
         self.pixels = pixels
-        self.spectrum = spectrum
+        self._spectrum = spectrum
+        self._maximum_energy = 1000  # this is the maximum energy considered
 
     def loadImage(self, file=None):
         '''
         Loads an image file and stores the pixel values into source (tested with png).
         Passing None as the file name removes any previously loaded pixels.
         '''
-        if file is None: self.pixels = None
-        else: self.pixels = mpimg.imread(file)
+        if file is None:
+            self.pixels = None
+        else:
+            self.pixels = mpimg.imread(file)
 
     def plotImage(self, figureNum=1):
         '''
@@ -95,20 +99,14 @@ class Source(Plane):
         plt.imshow(self.pixels)
 
     def loadSpectrum(self, spectrum):
-        '''Loads an array as the energy spectrum for the source
+        '''Loads a function, f(energy_keV), as the energy spectrum
+            for the source
         '''
-        if spectrum.shape[0] != 2:
-            raise ValueError("Spectrum array must be 2 x N Numpy array")
-        if np.any(spectrum < 0):
-            raise ValueError("Spectrum cannot contain any negative values")
-        self.spectrum = spectrum
-
-    def plotSpectrum(self, figureNum=1):
-        '''
-        Display the source spectrum to screen
-        '''
-        plt.figure(figureNum)
-        plt.plot(self.spectrum[0, :], self.spectrum[1, :])
+        if not hasattr(spectrum, '__call__'):
+            raise ValueError("Spectrum must be a function, f(energy_keV)")
+        # normalize the spectrum function in case it is not already
+        norm_factor = quad(spectrum, 0, self._maximum_energy)
+        self._spectrum = lambda x: 1 / norm_factor[0] * spectrum(x)
 
     def colorAtPoint(self, points):
         '''
@@ -142,16 +140,17 @@ class Source(Plane):
         # return color
         return colors
 
-    def generateRays(self, targetFunc, n, grid=None, energy_dist=None):
+    def generateRays(self, targetFunc, n, grid=None):
         '''
-        Returns an array of rays, located at a source and pointed to valid target
-        points (on a module/shell/segment).
-        
+        Returns an array of rays, located at a source and pointed to valid
+        target points (on a module/shell/segment).
+
         Parameters:
-            targetFunc:    a function that generates points on the target plane (ex: module.targetFront)
+            targetFunc:    a function that generates points on the target plane
+                           (ex: module.targetFront)
             n:             the number of random rays to generate
-            grid:          the dimensions of a grid of points to generate (alternative to specifying n)
-            energy_dist    energy distribution to sample from for ray
+            grid:          the dimensions of a grid of points to generate 
+                           (alternative to specifying n)
         '''
         # create rays array
         if grid is None:
@@ -243,9 +242,9 @@ class Source(Plane):
             ray.tag = self
 
         # add energies to rays
-        if self.spectrum is not None:
-            for ray in rays:
-                ray.energy = genCustomRands(self.spectrum[0, :],
-                                            self.spectrum[1, :], 1)[0]
+        if self._spectrum is not None:
+            energies = genCustomRands(self._spectrum, len(rays))
+            for energy, ray in zip(energies, rays):
+                ray.energy = energy
 
         return rays

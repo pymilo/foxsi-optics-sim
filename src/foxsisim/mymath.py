@@ -9,7 +9,8 @@ from numpy import dot
 from numpy.linalg import norm
 from numpy.random import random
 from reflectivity import Reflectivity
-from scipy import interpolate
+from scipy.integrate import quad
+from scipy import stats
 
 halfpi = pi / 2
 dtf = np.dtype('f8')
@@ -77,24 +78,23 @@ def calcShellRadius(angle, focalLength):
         return tan(angle) * focalLength * 4
 
 
-def genCustomRands(x, y, n):
+def genCustomRands(f, n):
     '''
     Generate n random numbers given a distribution (x, y)
     '''
-#     last_index = 0
-#     not_done = True
-#     result = np.zeros(n)
-#     f = interpolate.interp1d(x, y, kind=2)
-#     while not_done:
-#         xtry = random(20 * n) * (x.max() - x.min()) + x.min()
-#         ytry = random(20 * n) * (y.max() - y.min()) + y.min()
-#         # now fill the array
-#         good_index = ytry < f(xtry)
-#         good_count = np.count_nonzero(good_index)
-#         if good_count + last_index >= n:
-#             not_done = False
-#             good_count = n - last_index
-#         result[last_index:good_count + last_index] = xtry[good_index][0:good_count]
-#         last_index += good_count
-#     return result
-    return random(1) * (x.max() - x.min()) + x.min()
+    dist = getDistribution(f)
+    return dist.rvs(size=n)
+
+
+def getDistribution(f):
+    '''
+    Create a distribution to draw random numbers from
+    '''
+    class rv(stats.rv_continuous):
+        def _pdf(self, x):
+            return f(x)
+
+        def _cdf(self, x):
+            return quad(f, 0, x)
+
+    return rv(name='customdist')

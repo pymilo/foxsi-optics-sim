@@ -25,7 +25,7 @@ class Reflectivity:
 
         for this_file in files[1:]:
             data = np.loadtxt(this_file, skiprows=2)
-            energy = int(re.findall(r"\D(\d{2})\D", file)[0])
+            energy = int(re.findall(r"\D(\d{2})\D", this_file)[0])
             new_points = np.column_stack([np.ones(data.shape[0]) * energy,
                                           data[:, 0]])
             points = np.vstack([points, new_points])
