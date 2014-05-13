@@ -82,15 +82,15 @@ class Detector(Plane):
         axes.set_ylabel("Pixels")
         axes.set_xlabel("Pixels")
 
-    def plotSpectrum(self, axes, roi=None, dE=1, range=[0, 20]):
+    def plotSpectrum(self, axes, dE=1, range=[0, 20]):
         '''
         Plot the spectrum of the rays in a region of interest (if available,
         not yet implemented) or across the entire detector
         '''
-        energies = [ray.energy[0] for ray in self.rays]
+        energies = [ray.energy for ray in self.rays]
         axes.hist(energies, bins=(range[1] - range[0]) / dE, range=range)
         axes.set_xlabel("Energy [keV]")
-        axes.set_title("Spectrum")
+        axes.set_title("Detector Spectrum N = " + str(len(energies)))
 
     def _initDetectorImage(self):
 
@@ -165,8 +165,8 @@ class Detector(Plane):
         for x in range(dims[0]):
             for y in range(dims[1]):
                 if counts[x, y] > 0:
-                    #total = self.freqs[x,y] + counts[x,y]
-                    #self.pixels[x,y] = (self.freqs[x,y]*self.pixels[x,y]
+                    # total = self.freqs[x,y] + counts[x,y]
+                    # self.pixels[x,y] = (self.freqs[x,y]*self.pixels[x,y]
                     # + colorSum[x,y]) / total
                     total = counts[x, y]
                     self.pixels[x, y] = colorSum[x, y] / total

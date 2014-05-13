@@ -16,22 +16,22 @@ import matplotlib.pyplot as plt
 if __name__ == '__main__':
 
     # module parameters
-    focalLength      = 200.0
-    segmentLength    = 30.0
-    radii            = [5.15100,4.90000,4.65900,4.42900,4.21000,4.00000,3.79900] # 7 shell radii
-    
+    focalLength = 200.0
+    segmentLength = 30.0
+    radii = [5.15100, 4.90000, 4.65900, 4.42900, 4.21000, 4.00000, 3.79900]  # 7 shell radii
+
     # create module
     module = Module(seglen=segmentLength, focal=focalLength, radii=radii)
-    
+
     # generate cross section
-    fig1 = plt.figure(figsize=(9,3))
+    fig1 = plt.figure(figsize=(9, 3))
     axes1 = fig1.gca()
-    module.plot2D(axes1,'b')
-    
+    module.plot2D(axes1, 'b')
+
     # generate 3d representation
-    fig2 = plt.figure(figsize=(5,5))
+    fig2 = plt.figure(figsize=(5, 5))
     axes2 = get3dAxes(fig2)
     module.plot3D(axes2, 'b')
-    
+
     # show figures
     plt.show()

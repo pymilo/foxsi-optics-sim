@@ -42,7 +42,8 @@ class Module:
 
         self.shells = []
         for i, r in enumerate(radii):
-            self.shells.append(Shell(base=base, seglen=seglen, ang=angles[i], r=r))
+            self.shells.append(Shell(base=base, seglen=seglen, ang=angles[i],
+                                     r=r))
 
         # inner core (blocks rays going through center of module)
         r0 = self.shells[-1].back.r0
@@ -79,7 +80,7 @@ class Module:
         Takes an array of rays and passes them through the front end of
         the module.
         '''
-        #print 'Module: passing ',len(rays),' rays'
+        # print 'Module: passing ',len(rays),' rays'
 
         # get all module surfaces
         allSurfaces = self.getSurfaces()
@@ -148,7 +149,9 @@ class Module:
                     # update ray
                     ray.pos = ray.getPoint(bestSol[2])
                     ray.bounces += 1
-                    x = reflect(ray.ori,bestSurf.getNormal(bestSol[0],bestSol[1]),ray.energy)
+                    x = reflect(ray.ori,
+                                bestSurf.getNormal(bestSol[0], bestSol[1]),
+                                ray.energy)
 
                     # if reflected
                     if x is not None:
@@ -208,7 +211,7 @@ class Module:
         from 0 to 1. Returns an array of points that exist on the circle
         defined by the wide end of the module.
         '''
-        #must modify 'a' so that we dont return points from the core
+        # must modify 'a' so that we dont return points from the core
         r0 = self.shells[0].front.r0
         r1 = self.core.r0
         a0 = (r1 / r0) ** 2  # the 'a' value that gives r1=sqrt(a)*r0
@@ -223,7 +226,7 @@ class Module:
         from 0 to 1. Returns an array of points that exist on the circle
         defined by the small end of the module.
         '''
-        #must modify 'a' so that we dont return points from the core
+        # must modify 'a' so that we dont return points from the core
         r0 = self.shells[0].back.r1
         r1 = self.core.r1
         a0 = (r1 / r0) ** 2  # the 'a' value that gives r1=sqrt(a)*r0
