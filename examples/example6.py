@@ -55,6 +55,7 @@ if __name__ == '__main__':
     rays_on_detector = len(detector.rays)
 
     plot(detector, energy_range=[0, 15])
+    plt.show()
 
     print('Number of rays on Detector ' + str(rays_on_detector))
     print('Time total: ' + str((datetime.now() - tstart).seconds) + ' seconds')

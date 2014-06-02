@@ -60,10 +60,9 @@ def calcShellAngle(radius, focalLength):
     of radii. Returns an angle or a numpy array of angles.
     '''
     if type(radius) is np.ndarray or type(radius) is list:
-        # took this eqn from the excel file
-        return np.array([atan(r / (focalLength * 4)) for r in radius], dtf)
+        return np.array([0.25 * atan(r / focalLength) for r in radius], dtf)  # took this eqn from the excel file...
     else:
-        return atan(radius / (focalLength * 4))
+        return 0.25 * atan(radius / focalLength)
 
 
 def calcShellRadius(angle, focalLength):

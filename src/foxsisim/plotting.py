@@ -95,19 +95,19 @@ def scatterHist(rays, figure=None, binwidth=0.01, colorBounces=True):
     return fig
 
 
-def plot(data_object, figureNum=0, *args):
+def plot(data_object, figureNum=0, **kwargs):
     '''Create a plot of the given data object'''
 
     if isinstance(data_object, Reflectivity):
         plt.figure(figureNum)
-        _plotReflectivity(data_object, *args)
+        _plotReflectivity(data_object, **kwargs)
     if isinstance(data_object, Source):
         plt.figure(figureNum)
         if data_object._spectrum is not None:
-            _plotSourceSpectrum(data_object, *args)
+            _plotSourceSpectrum(data_object, **kwargs)
     if isinstance(data_object, Detector):
         plt.figure(figureNum)
-        _plotDetectorImage(data_object, *args)
+        _plotDetectorImage(data_object, **kwargs)
 
 
 def _plotReflectivity(reflectivity):
@@ -148,8 +148,8 @@ def _plotDetectorImage(detector, energy_range=None):
     plt.imshow(detector.pixels)
     title_str = 'N = ' + str(len(detector.rays))
     if energy_range is not None:
-        title_str.append(str(energy_range[0]) + ' - ' +
+        title_str += ' ' + (str(energy_range[0]) + ' - ' +
                         str(energy_range[1]) + ' keV')
     plt.title(title_str)
     plt.ylabel("Pixels")
-    plt.set_xlabel("Pixels")
+    plt.xlabel("Pixels")

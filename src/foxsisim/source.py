@@ -212,10 +212,12 @@ class Source(Plane):
                 srcY = (rng0[0, 1], rng1[0, 1])  # range of source y values
                 srcZ = (rng0[0, 2], rng1[0, 2])  # range of source z values
 
-                targX = (min(targPnts[:, 0]), max(targPnts[:, 0]))  # range of target x values
-                targY = (min(targPnts[:, 1]), max(targPnts[:, 1]))  # range of target y values
-                targZ = (min(targPnts[:, 2]), max(targPnts[:, 2]))  # range of target z values
-
+                # range of target x values
+                targX = (min(targPnts[:, 0]), max(targPnts[:, 0]))
+                # range of target y values
+                targY = (min(targPnts[:, 1]), max(targPnts[:, 1]))
+                # range of target z values
+                targZ = (min(targPnts[:, 2]), max(targPnts[:, 2]))
                 srcXdiff = srcX[1] - srcX[0]
                 srcYdiff = srcY[1] - srcY[0]
                 srcZdiff = srcZ[1] - srcZ[0]
