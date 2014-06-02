@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'src/foxsisim_gui/ui/mainwindow.ui'
 #
-# Created: Wed Aug 17 08:59:42 2011
-#      by: PyQt4 UI code generator 4.8.3
+# Created: Sat May  3 00:01:21 2014
+#      by: PyQt4 UI code generator 4.9.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -205,7 +205,7 @@ class Ui_MainWindow(object):
         self.pushButton_6.setObjectName(_fromUtf8("pushButton_6"))
         self.progressBar = QtGui.QProgressBar(self.groupBox)
         self.progressBar.setGeometry(QtCore.QRect(10, 120, 261, 21))
-        self.progressBar.setProperty(_fromUtf8("value"), 0)
+        self.progressBar.setProperty("value", 0)
         self.progressBar.setObjectName(_fromUtf8("progressBar"))
         self.groupBox_2 = QtGui.QGroupBox(self.tab_3)
         self.groupBox_2.setGeometry(QtCore.QRect(320, 10, 191, 71))
@@ -263,8 +263,10 @@ class Ui_MainWindow(object):
         self.label_4.setText(QtGui.QApplication.translate("MainWindow", "Detector Width", None, QtGui.QApplication.UnicodeUTF8))
         self.label_5.setToolTip(QtGui.QApplication.translate("MainWindow", "Height of the detector", None, QtGui.QApplication.UnicodeUTF8))
         self.label_5.setText(QtGui.QApplication.translate("MainWindow", "Detector Height", None, QtGui.QApplication.UnicodeUTF8))
-        self.tableWidget.horizontalHeaderItem(0).setText(QtGui.QApplication.translate("MainWindow", "Shell Radius", None, QtGui.QApplication.UnicodeUTF8))
-        self.tableWidget.horizontalHeaderItem(1).setText(QtGui.QApplication.translate("MainWindow", "Shell Angle", None, QtGui.QApplication.UnicodeUTF8))
+        item = self.tableWidget.horizontalHeaderItem(0)
+        item.setText(QtGui.QApplication.translate("MainWindow", "Shell Radius", None, QtGui.QApplication.UnicodeUTF8))
+        item = self.tableWidget.horizontalHeaderItem(1)
+        item.setText(QtGui.QApplication.translate("MainWindow", "Shell Angle", None, QtGui.QApplication.UnicodeUTF8))
         self.toolButton_3.setToolTip(QtGui.QApplication.translate("MainWindow", "Add a row to the radii/angles table", None, QtGui.QApplication.UnicodeUTF8))
         self.toolButton_3.setText(QtGui.QApplication.translate("MainWindow", "+", None, QtGui.QApplication.UnicodeUTF8))
         self.toolButton_4.setToolTip(QtGui.QApplication.translate("MainWindow", "Remove a row from the radii/angles table", None, QtGui.QApplication.UnicodeUTF8))
@@ -278,12 +280,18 @@ class Ui_MainWindow(object):
         self.pushButton_5.setToolTip(QtGui.QApplication.translate("MainWindow", "Plot a cross section of the module", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_5.setText(QtGui.QApplication.translate("MainWindow", "Plot Cross Section", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QtGui.QApplication.translate("MainWindow", "Module", None, QtGui.QApplication.UnicodeUTF8))
-        self.tableWidget_2.horizontalHeaderItem(0).setText(QtGui.QApplication.translate("MainWindow", "Type", None, QtGui.QApplication.UnicodeUTF8))
-        self.tableWidget_2.horizontalHeaderItem(1).setText(QtGui.QApplication.translate("MainWindow", "Center", None, QtGui.QApplication.UnicodeUTF8))
-        self.tableWidget_2.horizontalHeaderItem(2).setText(QtGui.QApplication.translate("MainWindow", "Normal", None, QtGui.QApplication.UnicodeUTF8))
-        self.tableWidget_2.horizontalHeaderItem(3).setText(QtGui.QApplication.translate("MainWindow", "Width", None, QtGui.QApplication.UnicodeUTF8))
-        self.tableWidget_2.horizontalHeaderItem(4).setText(QtGui.QApplication.translate("MainWindow", "Height", None, QtGui.QApplication.UnicodeUTF8))
-        self.tableWidget_2.horizontalHeaderItem(5).setText(QtGui.QApplication.translate("MainWindow", "Color", None, QtGui.QApplication.UnicodeUTF8))
+        item = self.tableWidget_2.horizontalHeaderItem(0)
+        item.setText(QtGui.QApplication.translate("MainWindow", "Type", None, QtGui.QApplication.UnicodeUTF8))
+        item = self.tableWidget_2.horizontalHeaderItem(1)
+        item.setText(QtGui.QApplication.translate("MainWindow", "Center", None, QtGui.QApplication.UnicodeUTF8))
+        item = self.tableWidget_2.horizontalHeaderItem(2)
+        item.setText(QtGui.QApplication.translate("MainWindow", "Normal", None, QtGui.QApplication.UnicodeUTF8))
+        item = self.tableWidget_2.horizontalHeaderItem(3)
+        item.setText(QtGui.QApplication.translate("MainWindow", "Width", None, QtGui.QApplication.UnicodeUTF8))
+        item = self.tableWidget_2.horizontalHeaderItem(4)
+        item.setText(QtGui.QApplication.translate("MainWindow", "Height", None, QtGui.QApplication.UnicodeUTF8))
+        item = self.tableWidget_2.horizontalHeaderItem(5)
+        item.setText(QtGui.QApplication.translate("MainWindow", "Color", None, QtGui.QApplication.UnicodeUTF8))
         self.toolButton.setToolTip(QtGui.QApplication.translate("MainWindow", "Add row to the sources table", None, QtGui.QApplication.UnicodeUTF8))
         self.toolButton.setText(QtGui.QApplication.translate("MainWindow", "+", None, QtGui.QApplication.UnicodeUTF8))
         self.toolButton_2.setToolTip(QtGui.QApplication.translate("MainWindow", "Remove row from sources table", None, QtGui.QApplication.UnicodeUTF8))
