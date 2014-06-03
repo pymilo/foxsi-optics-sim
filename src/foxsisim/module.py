@@ -7,7 +7,7 @@ from segment import Segment
 from shell import Shell
 from circle import Circle
 from mymath import reflect, calcShellAngle
-from math import tan, atan
+from math import tan, atan, cos, sqrt
 from numpy.linalg import norm
 
 
@@ -42,7 +42,7 @@ class Module:
 
         self.shells = []
         for i, r in enumerate(radii):
-            self.shells.append(Shell(base=base, seglen=seglen, ang=angles[i],
+            self.shells.append(Shell(base=base, focal=focal, seglen=seglen, ang=angles[i],
                                      r=r))
 
         # inner core (blocks rays going through center of module)
