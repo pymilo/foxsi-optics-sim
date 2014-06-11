@@ -21,7 +21,8 @@ class Module:
                  seglen=30.0,
                  focal=200.0,
                  radii=[5.151, 4.9, 4.659, 4.429, 4.21, 4.0, 3.799],
-                 angles=None
+                 angles=None,
+                 geo = 'phd'
                  ):
         '''
         Constructor
@@ -34,6 +35,8 @@ class Module:
                      smallest
             angles:  optional parameter to overwrite the shell angles computed
                      by constructor
+            geo:     Geometry for the mirrors. Cone approx. or hyperboloid and
+                     paraboloid.
         '''
         if angles is None:
             angles = calcShellAngle(radii, focal)
@@ -43,7 +46,7 @@ class Module:
         self.shells = []
         for i, r in enumerate(radii):
             self.shells.append(Shell(base=base, focal=focal, seglen=seglen, ang=angles[i],
-                                     r=r))
+                                     r=r, geo=geo))
 
         # inner core (blocks rays going through center of module)
         r0 = self.shells[-1].back.r0
