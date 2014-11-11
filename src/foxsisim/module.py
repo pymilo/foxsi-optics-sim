@@ -47,14 +47,16 @@ class Module:
                                      r=r, conic=conic))
 
         # inner core (blocks rays going through center of module)
+        # not sure if the core must have an angle to it so made it very small
+        # and made coreFaces match in radius
         r0 = self.shells[-1].back.r0
         r1 = r0 - seglen * tan(4 * angles[-1])
         ang = atan((r0 - r1) / (2 * seglen))
-        self.core = Segment(base=base, seglen=2 * seglen, ang=ang, r0=r0)
+        self.core = Segment(base=base, seglen=2 * seglen, ang=.001, r0=r0)
         self.coreFaces = [Circle(center=base, normal=[0, 0, 1], radius=r0),
                           Circle(center=[base[0], base[1],
                                          base[2] + 2 * seglen],
-                                 normal=[0, 0, -1], radius=r1)]
+                                 normal=[0, 0, -1], radius=r0)]
 
     def getDims(self):
         '''
