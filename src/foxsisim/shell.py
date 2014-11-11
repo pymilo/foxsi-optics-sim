@@ -39,7 +39,7 @@ class Shell:
             self.front = Segmentp(base=base, focal=focal, seglen=seglen, ang=ang, r1=r)
             backBase = [base[0], base[1], base[2] + seglen]
             # Hyperboloid segment
-            self.back = Segmenth(base=backBase, focal=focal, seglen=seglen, ang=3 * ang, r0=r)
+            self.back = Segmenth(base=backBase, focal=focal, seglen=seglen, ang=ang, r0=r)
         else:
             self.front = Segment(base=base, seglen=seglen, ang=ang, r1=r)
             backBase = [base[0], base[1], base[2]+seglen]

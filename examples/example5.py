@@ -19,7 +19,7 @@ from numpy.linalg import norm
 if __name__ == '__main__':
 
     # create default shell/detector/source
-    shell = Shell()
+    shell = Shell(conic=True)
     detector = Detector()
     source = Source()
     
@@ -44,7 +44,7 @@ if __name__ == '__main__':
                 # update ray
                 ray.pos = ray.getPoint(sol[2])
                 ray.bounces += 1
-                x = reflect(ray.ori,surface.getNormal(sol[0],sol[1]))
+                x = reflect(ray.ori,surface.getNormal(sol[0],sol[1]), None)
                 # if reflected
                 if x is not None:
                     ray.ori = x / norm(x) # update ori to unit vector reflection

@@ -70,6 +70,9 @@ class Segmenth(Surface):
         # Scale factor on z
         self.ch = self.seglen / (self.r0 ** 2 - self.r1 ** 2)
         # check vars
+        print("Hyperboloid")
+        print('r0 %f' % self.r0)
+        print('r1 %f' % self.r1)
         if self.r0 <= 0 or self.r0 < self.r1 or self.r1 <= 0:
             print 'error: invalid segment dimensions'
 

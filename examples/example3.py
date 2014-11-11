@@ -13,11 +13,12 @@ from foxsisim.module import Module
 from foxsisim.detector import Detector
 from foxsisim.source import Source
 import matplotlib.pyplot as plt
+from foxsisim.plotting import plot
 
 if __name__ == '__main__':
 
     # create module using defaults
-    module = Module()
+    module = Module(conic=True)
     
     # create a detector located slightly in front of focal point
     detector = Detector(center=[0,0,228]) # focal point is at 230 by default
@@ -47,9 +48,7 @@ if __name__ == '__main__':
     detector.catchRays(rays)
     
     # plot detector pixels
-    fig = plt.figure(figsize=(5,5))
-    axes = fig.gca()
-    detector.plotImage(axes)
+    plot(detector)
     
     # show
     plt.show()

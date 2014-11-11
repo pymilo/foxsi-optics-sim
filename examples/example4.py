@@ -13,12 +13,13 @@ Created on Aug 15, 2011
 from foxsisim.module import Module
 from foxsisim.detector import Detector
 from foxsisim.source import Source
+from foxsisim.plotting import plot
 import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
 
     # create module using defaults
-    module = Module()
+    module = Module(conic=True)
     
     # create large detector facing aperture
     detector = Detector(center=[0,0,-100], normal=[0,0,1], width=50, height=50)
@@ -34,9 +35,7 @@ if __name__ == '__main__':
     detector.catchRays(rays)
     
     # plot detector pixels
-    fig1 = plt.figure(figsize=(5,5))
-    axes1 = fig1.gca()
-    detector.plotImage(axes1)
+    plot(detector)
 
     # show
     plt.show()

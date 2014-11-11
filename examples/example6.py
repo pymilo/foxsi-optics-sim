@@ -31,25 +31,24 @@ if __name__ == '__main__':
     seglen = 30
     base = [0, 0, 0]
     focal_length = 200
-    module = Module(radii=radii, seglen=seglen, base=base, angles=None, focal=focal_length)
+    module = Module(radii=radii, seglen=seglen, base=base, angles=None, focal=focal_length, conic=True)
 
     detector = Detector(center=[0, 0, 230])  # focal point is at 230 by default
 
     nrays = 500
-#  generate nrays from the source
+    #  generate nrays from the source
     rays = source.generateRays(module.targetFront, nrays)
 
-
-    fig = plt.figure(figsize=(5, 5))
     plot(source)
+    plt.figure()
     plt.hist([ray.energy for ray in rays], normed=True, label='generated rays')
     plt.legend()
     plt.show()
 
-# pass rays through module
+    # pass rays through module
     module.passRays(rays, robust=True)
 
-# catch rays at detector
+    # catch rays at detector
     detector.catchRays(rays)
 
     rays_on_detector = len(detector.rays)
