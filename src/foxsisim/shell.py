@@ -9,7 +9,6 @@ from segmenth import Segmenth
 
 from math import tan, pi
 
-
 class Shell:
     '''
     A shell consists of two segments, one in the front and one behind.
