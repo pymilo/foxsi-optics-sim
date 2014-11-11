@@ -22,7 +22,7 @@ class Module:
                  focal=200.0,
                  radii=[5.151, 4.9, 4.659, 4.429, 4.21, 4.0, 3.799],
                  angles=None,
-                 geo = 'phd'
+                 conic=False
                  ):
         '''
         Constructor
@@ -35,8 +35,6 @@ class Module:
                      smallest
             angles:  optional parameter to overwrite the shell angles computed
                      by constructor
-            geo:     Geometry for the mirrors. Cone approx. or hyperboloid and
-                     paraboloid.
         '''
         if angles is None:
             angles = calcShellAngle(radii, focal)
@@ -46,17 +44,19 @@ class Module:
         self.shells = []
         for i, r in enumerate(radii):
             self.shells.append(Shell(base=base, focal=focal, seglen=seglen, ang=angles[i],
-                                     r=r, geo=geo))
+                                     r=r, conic=conic))
 
         # inner core (blocks rays going through center of module)
+        # not sure if the core must have an angle to it so made it very small
+        # and made coreFaces match in radius
         r0 = self.shells[-1].back.r0
         r1 = r0 - seglen * tan(4 * angles[-1])
         ang = atan((r0 - r1) / (2 * seglen))
-        self.core = Segment(base=base, seglen=2 * seglen, ang=ang, r0=r0)
+        self.core = Segment(base=base, seglen=2 * seglen, ang=.001, r0=r0)
         self.coreFaces = [Circle(center=base, normal=[0, 0, 1], radius=r0),
                           Circle(center=[base[0], base[1],
                                          base[2] + 2 * seglen],
-                                 normal=[0, 0, -1], radius=r1)]
+                                 normal=[0, 0, -1], radius=r0)]
 
     def getDims(self):
         '''

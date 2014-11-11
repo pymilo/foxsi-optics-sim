@@ -22,8 +22,7 @@ class Shell:
                  seglen=30.0,
                  ang=0.00643732691573,  # focal length of 2m
                  r=5.151,
-                 geo=None
-                 ):
+                 focal=200.0, conic=False):
         '''
         Constructor
 
@@ -34,16 +33,16 @@ class Shell:
                      segment
             r:       radius of the shell where the two segments meet
         '''
-        if geo is 'phd':
-            self.front = Segmentp(base=base, focal=focal, seglen=seglen, ang=ang, r1=r) # Paraboloid
-            backBase = [base[0], base[1], base[2]+seglen]
-            self.back = Segmenth(base=backBase, focal=focal, seglen=seglen, ang=ang, r0=r) # Hyperb
-        elif geo is 'cone':
+        if conic is False:
+            # Paraboloid segment
+            self.front = Segmentp(base=base, focal=focal, seglen=seglen, ang=ang, r1=r)
+            backBase = [base[0], base[1], base[2] + seglen]
+            # Hyperboloid segment
+            self.back = Segmenth(base=backBase, focal=focal, seglen=seglen, ang=ang, r0=r)
+        else:
             self.front = Segment(base=base, seglen=seglen, ang=ang, r1=r)
             backBase = [base[0], base[1], base[2]+seglen]
             self.back = Segment(base=backBase, seglen=seglen, ang=3*ang, r0=r)
-        else:
-           raise ValueError(" GEO variable no valid. Use geo = 'cone' for cone approximation or geo = 'phd' for Hyp. and Par. dishes")
 
     def getSurfaces(self):
         '''
