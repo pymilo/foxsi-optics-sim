@@ -21,7 +21,8 @@ class Module:
                  seglen=30.0,
                  focal=200.0,
                  radii=[5.151, 4.9, 4.659, 4.429, 4.21, 4.0, 3.799],
-                 angles=None
+                 angles=None,
+                 conic=False
                  ):
         '''
         Constructor
@@ -43,7 +44,7 @@ class Module:
         self.shells = []
         for i, r in enumerate(radii):
             self.shells.append(Shell(base=base, focal=focal, seglen=seglen, ang=angles[i],
-                                     r=r))
+                                     r=r, conic=conic))
 
         # inner core (blocks rays going through center of module)
         r0 = self.shells[-1].back.r0
