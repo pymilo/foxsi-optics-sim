@@ -36,6 +36,7 @@ class Ray:
             bounces: the number of times the ray has hit a surface
             energy:  the energy of the ray (in keV)
             num:     a number to identify the ray
+            hist:    the history of the ray, a list of positions of all the interactions
         '''
         self.pos = np.array(pos, dt)
         self.ori = np.array(ori, dt)
@@ -46,6 +47,7 @@ class Ray:
         self.bounces = bounces
         self.energy = energy
         self.num = 0
+        self.hist = []
 
     def inRange(self, t):
         '''

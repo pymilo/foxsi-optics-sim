@@ -120,6 +120,7 @@ class Module:
                         ray.bounces += 1
                         ray.dead = True
                         ray.des = ray.pos
+                        ray.hist.append(ray.pos)
                         continue
                     else:
                         ray.moveToZ(self.coreFaces[0].center[2])
@@ -131,6 +132,7 @@ class Module:
                         ray.bounces += 1
                         ray.dead = True
                         ray.des = ray.pos
+                        ray.hist.append(ray.pos)
                         continue
                     else:
                         ray.moveToZ(self.coreFaces[1].center[2])
@@ -160,6 +162,7 @@ class Module:
 
                     # update ray
                     ray.pos = ray.getPoint(bestSol[2])
+                    ray.hist.append(ray.pos)
                     ray.bounces += 1
                     print("%i ray bounce number %i" % (ray.num, ray.bounces))
 
