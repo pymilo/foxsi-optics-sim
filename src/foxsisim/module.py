@@ -119,6 +119,7 @@ class Module:
                         ray.pos = ray.getPoint(sol[2])
                         ray.bounces += 1
                         ray.dead = True
+                        ray.des = ray.pos
                         continue
                     else:
                         ray.moveToZ(self.coreFaces[0].center[2])
@@ -129,6 +130,7 @@ class Module:
                         ray.pos = ray.getPoint(sol[2])
                         ray.bounces += 1
                         ray.dead = True
+                        ray.des = ray.pos
                         continue
                     else:
                         ray.moveToZ(self.coreFaces[1].center[2])
@@ -139,7 +141,6 @@ class Module:
 
             # while ray is inside module
             while True:
-
                 # find nearest ray intersection
                 bestDist = None
                 bestSol = None
