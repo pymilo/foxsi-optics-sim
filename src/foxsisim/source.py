@@ -240,8 +240,9 @@ class Source(Plane):
             raise ValueError('invalid source type')
 
         # tag the rays as coming from this source
-        for ray in rays:
+        for i, ray in enumerate(rays):
             ray.tag = self
+            ray.num = i
 
         # add energies to rays
         if self._spectrum is not None:

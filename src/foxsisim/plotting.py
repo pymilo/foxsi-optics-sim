@@ -92,9 +92,6 @@ def scatterHist(rays, figure=None, binwidth=0.01, colorBounces=True):
         axHistx.set_xlim(axScatter.get_xlim())
         axHisty.set_ylim(axScatter.get_ylim())
 
-    return fig
-
-
 def plot(data_object, figureNum=0, **kwargs):
     '''Create a plot of the given data object'''
 

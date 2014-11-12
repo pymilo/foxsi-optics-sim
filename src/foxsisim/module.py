@@ -50,6 +50,7 @@ class Module:
         # not sure if the core must have an angle to it so made it very small
         # and made coreFaces match in radius
         r0 = self.shells[-1].back.r0
+        r0 = 0.0001
         r1 = r0 - seglen * tan(4 * angles[-1])
         ang = atan((r0 - r1) / (2 * seglen))
         self.core = Segment(base=base, seglen=2 * seglen, ang=.001, r0=r0)
@@ -104,9 +105,9 @@ class Module:
                 regions[i].extend(self.shells[i + 1].getSurfaces())
 
         for ray in rays:
-
             # skip rays that hit a core face
             if ray.pos[2] < self.coreFaces[0].center[2]:
+                print("ray hit face 0")
                 sol = self.coreFaces[0].rayIntersect(ray)
                 if sol is not None:
                     ray.pos = ray.getPoint(sol[2])
@@ -116,6 +117,7 @@ class Module:
                 else:
                     ray.moveToZ(self.coreFaces[0].center[2])
             elif ray.pos[2] > self.coreFaces[1].center[2]:
+                print("ray hit face 1")
                 sol = self.coreFaces[1].rayIntersect(ray)
                 if sol is not None:
                     ray.pos = ray.getPoint(sol[2])
@@ -152,10 +154,12 @@ class Module:
                     # update ray
                     ray.pos = ray.getPoint(bestSol[2])
                     ray.bounces += 1
+                    print("%i ray bounce number %i" % (ray.num, ray.bounces))
+
                     x = reflect(ray.ori,
                                 bestSurf.getNormal(bestSol[0], bestSol[1]),
                                 ray.energy)
-
+                    print(x)
                     # if reflected
                     if x is not None:
                         # update ori to unit vector reflection
@@ -163,6 +167,7 @@ class Module:
                     # otherwise, no reflection means ray is dead
                     else:
                         ray.dead = True
+                        print("%i ray killed by reflect" % ray.num)
                         break
 
                     # knowing the surface it has just hit, we can

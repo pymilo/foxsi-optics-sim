@@ -35,6 +35,7 @@ class Ray:
                      source object
             bounces: the number of times the ray has hit a surface
             energy:  the energy of the ray (in keV)
+            num:    a number to identify the ray
         '''
         self.pos = np.array(pos, dt)
         self.ori = np.array(ori, dt)
@@ -44,6 +45,7 @@ class Ray:
         self.tag = tag
         self.bounces = bounces
         self.energy = energy
+        self.num = 0
 
     def inRange(self, t):
         '''
