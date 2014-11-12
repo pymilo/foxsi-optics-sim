@@ -23,22 +23,24 @@ class Module:
                  radii=[5.151, 4.9, 4.659, 4.429, 4.21, 4.0, 3.799],
                  angles=None,
                  conic=False,
-                 core=True
+                 shield=True,
+                 core_radius=None
                  ):
         '''
         Constructor
 
         Parameters:
-            base:    the center point of the wide end of the segment
-            seglen:  the axial length of each segment
-            focal:   the focal length, measured from the center of the module
-            radii:   a list of radii, one for each shell from biggest to
-                     smallest
-            angles:  optional parameter to overwrite the shell angles computed
-                     by constructor
-            conic:   if True, use a conic approximation to the Wolter-I parabola-hyperbola.
-            core:    if True, create a shield at the core of the optic to block straight-thru
-                     flux.
+            base:       the center point of the wide end of the segment
+            seglen:     the axial length of each segment
+            focal:      the focal length, measured from the center of the module
+            radii:      a list of radii, one for each shell from biggest to
+                        smallest
+            angles:     optional parameter to overwrite the shell angles computed
+                        by constructor
+            conic:      if True, use a conic approximation to the Wolter-I parabola-hyperbola.
+            shield:       if True, create a shield at the core of the optic to block straight-thru
+                        flux.
+            shield_radius If shield is True then use this value for the shield radius
         '''
         if angles is None:
             angles = calcShellAngle(radii, focal)
@@ -53,16 +55,22 @@ class Module:
         # inner core (blocks rays going through center of module)
         # not sure if the core must have an angle to it so made it very small
         # and made coreFaces match in radius
-        if core is True:
-            r0 = self.shells[-1].back.r0
-            r0 = 0.0001
-            r1 = r0 - seglen * tan(4 * angles[-1])
-            ang = atan((r0 - r1) / (2 * seglen))
-            self.core = Segment(base=base, seglen=2 * seglen, ang=.001, r0=r0)
+        if shield is True:
+            self.shield = True
+            if core_radius is None:
+                r0 = self.shells[-1].front.r0
+                r1 = r0 - seglen * tan(4 * angles[-1])
+                #ang = atan((r0 - r1) / (2 * seglen))
+            else:
+                r0 = core_radius
+                r1 = core_radius
+            #self.core = Segment(base=base, seglen=2 * seglen, ang=0, r0=r0)
             self.coreFaces = [Circle(center=base, normal=[0, 0, 1], radius=r0),
                               Circle(center=[base[0], base[1],
                                              base[2] + 2 * seglen],
                                      normal=[0, 0, -1], radius=r0)]
+        else:
+            self.shield = None
 
     def getDims(self):
         '''
@@ -80,7 +88,7 @@ class Module:
         surfaces = []
         for shell in self.shells:
             surfaces.extend(shell.getSurfaces())
-        surfaces.append(self.core)
+        #surfaces.append(self.core)
         surfaces.extend(self.coreFaces)
         return(surfaces)
 
@@ -102,7 +110,7 @@ class Module:
             # innermost shell
             if i == len(self.shells) - 1:
                 regions[i] = shell.getSurfaces()
-                regions[i].append(self.core)
+                #regions[i].append(self.core)
             else:
                 # outer shell (reflective side facing region)
                 regions[i] = shell.getSurfaces()
@@ -110,12 +118,12 @@ class Module:
                 regions[i].extend(self.shells[i + 1].getSurfaces())
 
         for ray in rays:
-            if core is not None:
+            if self.shield is not None:
                 # skip rays that hit a core face
                 if ray.pos[2] < self.coreFaces[0].center[2]:
-                    print("ray hit face 0")
                     sol = self.coreFaces[0].rayIntersect(ray)
                     if sol is not None:
+                        print("ray hit face 0")
                         ray.pos = ray.getPoint(sol[2])
                         ray.bounces += 1
                         ray.dead = True
@@ -125,9 +133,9 @@ class Module:
                     else:
                         ray.moveToZ(self.coreFaces[0].center[2])
                 elif ray.pos[2] > self.coreFaces[1].center[2]:
-                    print("ray hit face 1")
                     sol = self.coreFaces[1].rayIntersect(ray)
                     if sol is not None:
+                        print("ray hit face 1")
                         ray.pos = ray.getPoint(sol[2])
                         ray.bounces += 1
                         ray.dead = True
@@ -206,15 +214,19 @@ class Module:
         '''
         for shell in self.shells:
             shell.plot2D(axes, color)
-
-        # plot core
-        self.core.plot2D(axes, color)
-        base = self.core.base
-        r0 = self.core.r0
-        r1 = self.core.r1
-        seglen = self.core.seglen
-        axes.plot((base[2], base[2]), (r0, -r0), '-' + color)
-        axes.plot((base[2] + seglen, base[2] + seglen), (r1, -r1), '-' + color)
+        print(self.coreFaces[0].center)
+        print(self.coreFaces[1].center)
+        if self.shield is not None:
+            # plot core
+            #self.core.plot2D(axes, color)
+            #base = self.core.base
+            r0 = self.coreFaces[0].radius
+            r1 = self.coreFaces[1].radius
+            z0 = self.coreFaces[0].center[2]
+            z1 = self.coreFaces[1].center[2]
+            #seglen = self.core.seglen
+            axes.plot((z0, z0), (r0, -r0), '-' + color)
+            axes.plot((z1, z1), (r1, -r1), '-' + color)
 
     def plot3D(self, axes, color='b'):
         '''
@@ -231,7 +243,7 @@ class Module:
         '''
         # must modify 'a' so that we dont return points from the core
         r0 = self.shells[0].front.r0
-        r1 = self.core.r0
+        r1 = self.coreFaces[0].radius
         a0 = (r1 / r0) ** 2  # the 'a' value that gives r1=sqrt(a)*r0
         adiff = 1 - a0
         for i in range(len(a)):

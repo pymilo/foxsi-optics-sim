@@ -15,13 +15,13 @@ import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
 
-    # module parameters
+    # module parameters for FOXSI
     focalLength = 200.0
     segmentLength = 30.0
     radii = [5.15100, 4.90000, 4.65900, 4.42900, 4.21000, 4.00000, 3.79900]  # 7 shell radii
 
     # create module
-    module = Module(seglen=segmentLength, focal=focalLength, radii=radii, conic=True)
+    module = Module(seglen=segmentLength, focal=focalLength, radii=radii, conic=True, core_radius=2.856)
 
     # generate cross section
     fig1 = plt.figure(figsize=(9, 3))
