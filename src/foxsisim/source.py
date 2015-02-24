@@ -178,6 +178,7 @@ class Source(Plane):
                 ray.pos = srcPnts[i, :]
                 ray.ori = normal
                 ray.src = ray.pos
+                ray.hist.append(ray.pos)
 
         # source is a point
         elif self.type == 'point':
@@ -189,6 +190,7 @@ class Source(Plane):
                 ray.ori = targPnts[i, :] - self.center
                 ray.ori = ray.ori / norm(ray.ori)
                 ray.src = ray.pos
+                ray.hist.append(ray.pos)
 
         # source is a nonpoint (has thickness)
         elif self.type == 'nonpoint':
@@ -235,6 +237,7 @@ class Source(Plane):
                 ray.ori = targPnts[i, :] - ray.pos
                 ray.ori = ray.ori / norm(ray.ori)
                 ray.src = ray.pos
+                ray.hist.append(ray.pos)
 
         else:
             raise ValueError('invalid source type')

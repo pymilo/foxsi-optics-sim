@@ -224,7 +224,7 @@ class Segment(Surface):
     def plot3D(self, axes, color = 'b'):
         '''
         Generates a 3d plot of the segment in the given figure
-        '''     
+        '''
         v = np.linspace(0,twopi,20)
         for i in range(len(v)):
             p1 = self.getPoint(0,v[i])

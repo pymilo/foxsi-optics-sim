@@ -109,7 +109,8 @@ class Detector(Plane):
                     ray.pos = ray.getPoint(sol[2])
                     ray.des = ray.pos
                     ray.dead = True
-                    ray.bounces += 1
+                    ray.bounces += 0
+                    ray.hist.append(ray.pos)
                     self.rays.append(ray)
 
     def _makeImage(self, energy_range=None):
