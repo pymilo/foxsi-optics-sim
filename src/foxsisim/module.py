@@ -10,6 +10,7 @@ from mymath import reflect, calcShellAngle
 from math import tan, atan, cos, sqrt
 from numpy.linalg import norm
 
+debug = False
 
 class Module:
     '''
@@ -180,7 +181,8 @@ class Module:
                     x = reflect(ray.ori,
                                 bestSurf.getNormal(bestSol[0], bestSol[1]),
                                 ray.energy)
-                    print(x)
+                    if debug:
+                        print(x)
                     # if reflected
                     if x is not None:
                         # update ori to unit vector reflection
