@@ -123,7 +123,8 @@ class Module:
                 if ray.pos[2] < self.coreFaces[0].center[2]:
                     sol = self.coreFaces[0].rayIntersect(ray)
                     if sol is not None:
-                        print("ray hit face 0")
+                        if debug:
+                            print("ray hit face 0")
                         ray.pos = ray.getPoint(sol[2])
                         ray.bounces += 1
                         ray.dead = True
@@ -135,7 +136,8 @@ class Module:
                 elif ray.pos[2] > self.coreFaces[1].center[2]:
                     sol = self.coreFaces[1].rayIntersect(ray)
                     if sol is not None:
-                        print("ray hit face 1")
+                        if debug:
+                            print("ray hit face 1")
                         ray.pos = ray.getPoint(sol[2])
                         ray.bounces += 1
                         ray.dead = True
@@ -172,7 +174,8 @@ class Module:
                     ray.pos = ray.getPoint(bestSol[2])
                     ray.hist.append(ray.pos)
                     ray.bounces += 1
-                    print("%i ray bounce number %i" % (ray.num, ray.bounces))
+                    if debug:
+                        print("%i ray bounce number %i" % (ray.num, ray.bounces))
 
                     x = reflect(ray.ori,
                                 bestSurf.getNormal(bestSol[0], bestSol[1]),
@@ -185,7 +188,8 @@ class Module:
                     # otherwise, no reflection means ray is dead
                     else:
                         ray.dead = True
-                        print("%i ray killed by reflect" % ray.num)
+                        if debug:
+                            print("%i ray killed by reflect" % ray.num)
                         break
 
                     # knowing the surface it has just hit, we can
@@ -214,8 +218,9 @@ class Module:
         '''
         for shell in self.shells:
             shell.plot2D(axes, color)
-        print(self.coreFaces[0].center)
-        print(self.coreFaces[1].center)
+        if debug:
+            print(self.coreFaces[0].center)
+            print(self.coreFaces[1].center)
         if self.shield is not None:
             # plot core
             #self.core.plot2D(axes, color)
