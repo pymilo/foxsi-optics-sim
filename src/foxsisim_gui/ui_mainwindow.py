@@ -14,6 +14,8 @@ try:
 except AttributeError:
     _fromUtf8 = lambda s: s
 
+DEFAULT_NUMBER_OF_RAYS_PER_SOURCE = 10000
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
@@ -185,6 +187,7 @@ class Ui_MainWindow(object):
         self.spinBox.setGeometry(QtCore.QRect(140, 30, 131, 27))
         self.spinBox.setMaximum(99999999)
         self.spinBox.setObjectName(_fromUtf8("spinBox"))
+        self.spinBox.setValue(DEFAULT_NUMBER_OF_RAYS_PER_SOURCE)
         self.label_7 = QtGui.QLabel(self.groupBox)
         self.label_7.setGeometry(QtCore.QRect(10, 60, 121, 31))
         self.label_7.setObjectName(_fromUtf8("label_7"))
@@ -330,4 +333,3 @@ class Ui_MainWindow(object):
         self.menuHelp.setTitle(QtGui.QApplication.translate("MainWindow", "Help", None, QtGui.QApplication.UnicodeUTF8))
         self.actionAbout_FOXSISIM.setText(QtGui.QApplication.translate("MainWindow", "About FOXSISIM", None, QtGui.QApplication.UnicodeUTF8))
         self.actionAbout_FOXSISIM_2.setText(QtGui.QApplication.translate("MainWindow", "About FOXSISIM", None, QtGui.QApplication.UnicodeUTF8))
-
