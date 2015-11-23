@@ -13,7 +13,7 @@ from foxsisim.module import Module
 from foxsisim.detector import Detector
 from foxsisim.source import Source
 from foxsisim.mymath import * #@UnusedWildImport
-from foxsisim.plotting import scatterHist
+from foxsisim.plotting import scatterHist, plot
 from math import cos
 import numpy as np #@Reimport
 
@@ -50,7 +50,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                           [0,1,1],
                           [1,0,1],
                           [0,0,0]]
-        
+
         # setup connections
         self.connect(self.actionAbout_FOXSISIM_2, SIGNAL('triggered()'),self.about)
         self.sourceSignalMapper = QSignalMapper() # needed to map combobox signals to table widget slots
@@ -79,11 +79,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.connect(self.simThread, SIGNAL('simulationDone'), self.simulationDone)
         self.connect(self.spinBox, SIGNAL('valueChanged(int)'), self.updateRaysToSimulate)
         self.connect(self, SIGNAL('updateRaysToSimulate'), self.updateRaysToSimulate)
-        
+
         # set defaults
         self.setModuleDefaults()
         self.setSourceDefaults()
-        
+
     def closeEvent(self, event):
         '''
         Performs shutdown tasks
@@ -91,7 +91,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         for fig in self.figures:
             fig.close()
         event.accept()
-        
+
     def about(self):
         '''
         Calls a message box displaying the 'About'
@@ -101,7 +101,7 @@ u'''FOXSISIM
 Copyright \N{COPYRIGHT SIGN} 2011 Robert Taylor, Steven Christe
 
 The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing incidence optics response to light sources of different wavelengths. This graphical user interface is a frontend for the foxsisim module.''')
-        
+
     def setModuleDefaults(self):
         '''
         Sets all default values in Module tab
@@ -114,13 +114,13 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
         self.doubleSpinBox_5.setValue(defaultDetectorHeight)
         self.spinBox_2.setValue(defaultDetectorReso[0])
         self.spinBox_3.setValue(defaultDetectorReso[1])
-        
+
         # module radii/angle table
         self.tableWidget.setRowCount(len(defaultRadii))
         for i,radius in enumerate(defaultRadii):
             r = QString.number(radius,precision=precision)
             self.tableWidget.setItem(i,0,QTableWidgetItem(r)) # angle is autofilled by tableWidget_itemChanged()
-        
+
     def setSourceDefaults(self):
         '''
         Sets all defaults in Sources tab
@@ -145,7 +145,7 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
         self.tableWidget.setItem(i,0,QTableWidgetItem(QString('')))
         self.tableWidget.setItem(i,1,QTableWidgetItem(QString('')))
         self.tableWidget.blockSignals(False)
-                        
+
     def insertSourceRow(self, i):
         '''
         Insert a row into the sources table
@@ -163,14 +163,14 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
         self.tableWidget_2.setItem(i,4,QTableWidgetItem(QString('')))
         self.tableWidget_2.setCellWidget(i,5,color)
         self.tableWidget_2.blockSignals(False)
-        
-        # connect signal from the type widget to the mapper which then will emit a 'mapped(i)' signal 
+
+        # connect signal from the type widget to the mapper which then will emit a 'mapped(i)' signal
         self.connect(type,SIGNAL('currentIndexChanged(int)'),self.sourceSignalMapper,SLOT('map()'))
         self.updateSourceSignalMapper()
-        
+
     def updateSourceSignalMapper(self):
         '''
-        Ensures the signal mappings are all correct 
+        Ensures the signal mappings are all correct
         '''
         for i in range(self.tableWidget_2.rowCount()):
             type = self.tableWidget_2.cellWidget(i,0)
@@ -193,16 +193,16 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
         import operator
         indices = [i for (i,j) in sorted(enumerate(radii), key=operator.itemgetter(1), reverse=True)]        #@UnusedVariable
         radii = [radii[i] for i in indices]
-        angles = [angles[i] for i in indices]        
+        angles = [angles[i] for i in indices]
         # get other value
         seglen = self.doubleSpinBox_2.value()
         focal = self.doubleSpinBox.value()
         # return module
         try: return Module(seglen=seglen,focal=focal,radii=radii,angles=angles)
-        except: 
+        except:
             QMessageBox.warning(self,'Warning','Could not create module. Check input values.')
             return None
-        
+
     def createDetector(self):
         '''
         Returns a Detector object based on gui input values
@@ -215,15 +215,15 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
         height = self.doubleSpinBox_5.value()
         reso = [self.spinBox_2.value(),self.spinBox_3.value()]
         try: return Detector(center=center, width=width, height=height, reso=reso)
-        except: 
+        except:
             QMessageBox.warning(self,'Warning','Could not create detector. Check input values.')
             return None
-        
+
     def createSource(self, row):
         '''
         Returns a Source object from row i in the sources table
         '''
-        
+
         # get input
         type = str(self.tableWidget_2.cellWidget(row,0).currentText())
         center = self.str2List(self.tableWidget_2.item(row,1).text())
@@ -231,68 +231,68 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
         width = self.str2Num(self.tableWidget_2.item(row,3).text())
         height= self.str2Num(self.tableWidget_2.item(row,4).text())
         colorText = str(self.tableWidget_2.cellWidget(row,5).currentText())
-        color = self.colorsRGB[self.colors.index(colorText)] 
-        
-        try: 
+        color = self.colorsRGB[self.colors.index(colorText)]
+
+        try:
             if type == 'atinf' or type == 'nonpoint':
                 return Source(center=center, width=width, height=height, normal=normal, type=type, color=color)
             elif type == 'point':
                 return Source(center=center, type=type, color=color)
-        except: 
+        except:
             QMessageBox.warning(self,'Warning','Could not create source at row '+str(row+1)+'. Check input values.')
             return None
-       
+
     def tabWidget_currentChanged(self, index):
         '''
-        Slot for tab change in tabWidget. 
+        Slot for tab change in tabWidget.
         '''
         # if we arent in the middle of simulation session
         if not self.simulationSessionStarted:
-            
+
             # update module/detector/sources
             if index != 0:
-                self.module = self.createModule()        
+                self.module = self.createModule()
                 self.detector = self.createDetector()
             if index != 1:
                 self.sources = []
                 for row in range(self.tableWidget_2.rowCount()):
                     source = self.createSource(row)
-                    if source is not None: self.sources.append(source)        
-                
+                    if source is not None: self.sources.append(source)
+
             # update source list for scatterplot
             if index == 2:
                 self.listWidget.clear()
                 for source in self.sources:
                     self.listWidget.addItem(QString(source.type+' at ['+self.list2Str(source.center)+']'))
                 self.listWidget.selectAll()
-                
+
             # update 'rays to simulate'
             if index == 2: self.emit(SIGNAL('updateRaysToSimulate'))
-                
+
     def tableWidget_itemChanged(self,item):
         '''
         Slot for item change in module radii/angles table
-        '''                
+        '''
         # prevent infinite recursion
         if self.tableItemChanging: return
         self.tableItemChanging = True
-        
+
         # get location
         row = item.row()
         col = item.column()
-        
+
         # get double float
         if len(item.text()) > 0:
             number,valid = item.text().toDouble()
-            if not valid: 
+            if not valid:
                 QMessageBox.warning(self,'Warning','Invalid input')
                 item.setText('')
                 number = None
         else: number = None
-    
+
         # if autocalculation is checked
         if self.checkBox.isChecked():
-            
+
             if number is None: # set the other column to none
                 self.tableWidget.setItem(row,(col+1)%2,QTableWidgetItem(''))
             elif col == 0: # radius changed
@@ -320,11 +320,11 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
     def tableWidget_2_itemChanged(self,item):
         '''
         Slot for item change in sources table
-        ''' 
+        '''
         # prevent infinite recursion
         if self.tableItemChanging: return
         self.tableItemChanging = True
-        
+
         # get location and row items
         row = item.row()
         col = item.column()
@@ -334,37 +334,37 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
         widthItem = self.tableWidget_2.item(row,3)
         heightItem = self.tableWidget_2.item(row,4)
         #colorWidget = self.tableWidget_2.cellWidget(row,5)
-        
+
         type = typeWidget.currentText()
         center = self.str2List(centerItem.text())
         normal = self.str2List(normalItem.text())
         width = self.str2Num(widthItem.text())
         height = self.str2Num(heightItem.text())
         #color = colorWidget.currentText()
-        
+
         # check validity of entire row's input
         invalidInput = False
-        if len(centerItem.text()) > 0 and (center is None or len(center) != 3): 
+        if len(centerItem.text()) > 0 and (center is None or len(center) != 3):
             center = None
             invalidInput = True
-        if len(normalItem.text()) > 0 and (normal is None or len(normal) != 3): 
+        if len(normalItem.text()) > 0 and (normal is None or len(normal) != 3):
             normal = None
             invalidInput = True
-        if len(widthItem.text()) > 0 and (width is None or width < 0): 
+        if len(widthItem.text()) > 0 and (width is None or width < 0):
             width = None
             invalidInput = True
-        if len(heightItem.text()) > 0 and (height is None or height < 0): 
+        if len(heightItem.text()) > 0 and (height is None or height < 0):
             height = None
             invalidInput = True
         if invalidInput: QMessageBox.warning(self,'Warning','Invalid input')
-        
+
         # if autocalculation is checked
         if self.checkBox_2.isChecked():
             if col == 1 and center is not None: # center changed
                 normal = [-x for x in center]
             elif col == 2 and normal is not None: # normal changed
                 center = [-x for x in normal]
-                
+
             # source width/height is autocalculated when atinf
             if type == QString('atinf') and normal is not None and normal[2] > 0:
                 ny = np.array([normal[0],0,normal[2]])
@@ -378,7 +378,7 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
             # check that center is in negative z region
             if center is not None and center[2] >= 0:
                 QMessageBox.warning(self,'Warning','Source center point should have a negative z value')
-                
+
         # change items
         self.tableWidget_2.setItem(row,1,QTableWidgetItem(self.list2Str(center)))
         self.tableWidget_2.setItem(row,2,QTableWidgetItem(self.list2Str(normal)))
@@ -387,7 +387,7 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
 
         # reset the recursion preventer
         self.tableItemChanging = False
-        
+
     def str2Num(self,str):
         '''
         Takes a QString and returns a double
@@ -396,14 +396,14 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
         num,valid = str.toDouble()
         if not valid: return None
         return num
-        
+
     def num2Str(self,num):
         '''
         Takes a number and returns a string
         '''
         if num is None: return QString('')
         return QString.number(num,precision=precision)
-        
+
     def str2List(self,str):
         '''
         Takes a string of from 'x,y,z' and returns list [x,y,z]
@@ -412,7 +412,7 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
             arr = str.split(',')
             return [float(s) for s in arr]
         except: return None
-    
+
     def list2Str(self,list):
         '''
         Takes a list of form [x,y,z] and returns string 'x,y,z'
@@ -421,8 +421,8 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
         arr = [QString.number(x,precision=precision)+',' for x in list]
         arr[-1].remove(-1,1)
         arr = [str(q) for q in arr]
-        return ''.join(arr)    
-        
+        return ''.join(arr)
+
     def toolButton_clicked(self):
         '''
         Slot for toolButton. Adds a row to the sources table.
@@ -441,14 +441,14 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
         self.sourceSignalMapper.removeMappings(self.tableWidget_2.cellWidget(row,0))
         self.tableWidget_2.removeRow(row)
         self.updateSourceSignalMapper()
-                
+
     def toolButton_3_clicked(self):
         '''
         Slot for toolButton_3. Adds a row to the module radii/angles table.
         '''
         row = self.tableWidget.rowCount()
         self.insertModuleRow(row)
-        
+
     def toolButton_4_clicked(self):
         '''
         Slot for toolButton_4. Removes a row from the module radii/angles table.
@@ -456,8 +456,8 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
         row = self.tableWidget.currentRow()
         if row < 0:
             row = self.tableWidget.rowCount()-1
-        self.tableWidget.removeRow(row)   
-    
+        self.tableWidget.removeRow(row)
+
     def toolButton_5_clicked(self):
         '''
         Slot for toolButton_5. Moves a row up in the module radii/angles table.
@@ -468,7 +468,7 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
             self.tableWidget.setItem(row+1,0,self.tableWidget.item(row-1,0).clone())
             self.tableWidget.setItem(row+1,1,self.tableWidget.item(row-1,1).clone())
             self.tableWidget.removeRow(row-1)
-            
+
     def toolButton_6_clicked(self):
         '''
         Slot for toolButton_6. Moves a row down in the module radii/angles table.
@@ -481,7 +481,7 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
             self.tableWidget.setItem(row+2,1,self.tableWidget.item(row,1).clone())
             self.tableWidget.removeRow(row)
             self.tableWidget.setCurrentCell(row+1,col)
-            
+
     def toolButton_7_clicked(self):
         '''
         Slot for toolButton_7. Moves a row up in the sources table.
@@ -495,11 +495,11 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
             self.tableWidget_2.setItem(row+1,3,self.tableWidget_2.item(row-1,3).clone())
             self.tableWidget_2.setItem(row+1,4,self.tableWidget_2.item(row-1,4).clone())
             self.tableWidget_2.cellWidget(row+1,5).setCurrentIndex(self.tableWidget_2.cellWidget(row-1,5).currentIndex())
-            
+
             self.sourceSignalMapper.removeMappings(self.tableWidget_2.cellWidget(row-1,0))
             self.tableWidget_2.removeRow(row-1)
             self.updateSourceSignalMapper()
-    
+
     def toolButton_8_clicked(self):
         '''
         Slot for toolButton_8. Moves a row down in the sources table.
@@ -514,17 +514,17 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
             self.tableWidget_2.setItem(row+2,3,self.tableWidget_2.item(row,3).clone())
             self.tableWidget_2.setItem(row+2,4,self.tableWidget_2.item(row,4).clone())
             self.tableWidget_2.cellWidget(row+2,5).setCurrentIndex(self.tableWidget_2.cellWidget(row,5).currentIndex())
-            
+
             self.sourceSignalMapper.removeMappings(self.tableWidget_2.cellWidget(row,0))
             self.tableWidget_2.removeRow(row)
             self.tableWidget_2.setCurrentCell(row+1,col)
             self.updateSourceSignalMapper()
-        
+
     def doubleSpinBox_valueChanged(self,value):
         '''
-        Slot for change in value of focal length 
-        ''' 
-        # if autocalculation is on, recalc angles  
+        Slot for change in value of focal length
+        '''
+        # if autocalculation is on, recalc angles
         if self.checkBox.isChecked():
             for row in range(self.tableWidget.rowCount()):
                 item = self.tableWidget.item(row,0) # radius item
@@ -541,7 +541,7 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
         elif len(self.sources) == 0:
             QMessageBox.warning(self,'Invalid source settings')
         else:
-            self.raysPerSource = self.spinBox.value() 
+            self.raysPerSource = self.spinBox.value()
             self.emit(SIGNAL('startSimulation'))
 
     def pushButton_2_clicked(self):
@@ -553,18 +553,18 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
         self.simThread.stopped = True
         self.simThread.wait()
         self.simThread.blockSignals(False)
-        
+
         # delete rays and update display
         self.allRays = []
         self.simulationDone()
-        
+
         # ungray other tabs
         self.tab.setEnabled(True)
         self.tab_2.setEnabled(True)
-        
+
         # indicate that the sim session has ended (module/detector/source settings can be changed)
         self.simulationSessionStarted = False
-        
+
     def pushButton_3_clicked(self):
         '''
         Slot for pushButton_3. Detector pixel plot.
@@ -590,10 +590,10 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
             for ray in self.detector.rays:
                 if ray.tag is source:
                     rays.append(ray)
-            
+
         # color bounce option
         colorBounces = self.checkBox_3.isChecked()
-        
+
         # create window
         window = QWidget()
         window.setWindowTitle('Scatter Plot')
@@ -603,7 +603,7 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
         l.addWidget(canv)
         window.show()
         self.figures.append(window)
-        
+
     def pushButton_5_clicked(self):
         '''
         Slot for pushButton_5. Plot module cross section.
@@ -637,24 +637,24 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
         '''
         self.progressBar.setValue(progressbar)
         num,valid = self.label_11.text().toInt() #@UnusedVariable
-        self.label_11.setText(QString(str(num+simulated))) 
-        
+        self.label_11.setText(QString(str(num+simulated)))
+
     def simulationStarted(self):
         '''
         Slot that disables majority of gui when a simulation is in progress
         '''
         self.simulationSessionStarted = True
-        
+
         # gray out buttons on sim tab
         self.pushButton.setEnabled(False)
         self.spinBox.setEnabled(False)
         self.groupBox_2.setEnabled(False)
         self.groupBox_3.setEnabled(False)
-        
+
         # gray out other tabs
         self.tab.setEnabled(False)
         self.tab_2.setEnabled(False)
-        
+
     def simulationDone(self):
         '''
         Slot that reenables the simulation tab, but not the other tabs
@@ -664,8 +664,7 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
         self.spinBox.setEnabled(True)
         self.groupBox_2.setEnabled(True)
         self.groupBox_3.setEnabled(True)
-        
+
         # reset progress bar to zero and make sure 'total simulated' is accurate
         self.progressBar.setValue(0)
         self.label_11.setText(QString.number(len(self.allRays)))
-        
