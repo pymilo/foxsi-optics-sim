@@ -3,7 +3,7 @@ Created on Jul 8, 2011
 
 @author: pymilo
 '''
-from surface import Surface
+from foxsisim.surface import Surface
 from math import sin,cos,tan,atan2,pi,sqrt
 import numpy as np
 from numpy.linalg import norm

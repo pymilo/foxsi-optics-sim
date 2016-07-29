@@ -3,8 +3,8 @@ Created on Jul 19, 2011
 
 @author: rtaylor
 '''
-from plane import Plane
-from source import Source
+from foxsisim.plane import Plane
+from foxsisim.source import Source
 import numpy as np
 from numpy.linalg import norm
 

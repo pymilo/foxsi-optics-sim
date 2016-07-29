@@ -3,14 +3,14 @@ Created on Jul 11, 2011
 
 @author: rtaylor
 '''
-from plane import Plane
-from ray import Ray
+from foxsisim.plane import Plane
+from foxsisim.ray import Ray
 import numpy as np
 from numpy.linalg import norm
 from random import random
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-from mymath import genCustomRands
+from foxsisim.mymath import genCustomRands
 from scipy.integrate import quad
 
 dt = np.dtype('f8')

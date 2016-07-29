@@ -3,10 +3,10 @@ Created on Jul 19, 2011
 
 @author: rtaylor
 '''
-from segment import Segment
-from shell import Shell
-from circle import Circle
-from mymath import reflect, calcShellAngle
+from foxsisim.segment import Segment
+from foxsisim.shell import Shell
+from foxsisim.circle import Circle
+from foxsisim.mymath import reflect, calcShellAngle
 from math import tan, atan, cos, sqrt
 from numpy.linalg import norm
 
