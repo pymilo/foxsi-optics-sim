@@ -1,3 +1,10 @@
+'''
+Created on 2014
+
+@author: StevenChriste
+'''
+
+
 from __future__ import absolute_import
 
 __all__ = ["Reflectivity"]

@@ -3,14 +3,14 @@ Created on Jul 11, 2011
 
 @author: rtaylor
 '''
-from plane import Plane
-from ray import Ray
+from foxsisim.plane import Plane
+from foxsisim.ray import Ray
 import numpy as np
 from numpy.linalg import norm
 from random import random
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-from mymath import genCustomRands
+from foxsisim.mymath import genCustomRands
 from scipy.integrate import quad
 
 dt = np.dtype('f8')
@@ -46,7 +46,7 @@ class Source(Plane):
             type:      'atinf', 'point', or 'nonpoint'
             color:     color of projected rays
             pixels:    optional numpy array of pixel colors (W x H x 3)
-            spectrum:  optional numpy array (2xN) of energy spectrum 
+            spectrum:  optional numpy array (2xN) of energy spectrum
         '''
         # normal should be length 1
         normal = normal / norm(normal)
@@ -110,7 +110,7 @@ class Source(Plane):
 
     def colorAtPoint(self, points):
         '''
-        Returns the rgb colors for a list of points. Assumes 
+        Returns the rgb colors for a list of points. Assumes
         each point exists on the source surface.
         '''
         colors = np.zeros((len(points), 3), np.dtype('f4'))
@@ -149,7 +149,7 @@ class Source(Plane):
             targetFunc:    a function that generates points on the target plane
                            (ex: module.targetFront)
             n:             the number of random rays to generate
-            grid:          the dimensions of a grid of points to generate 
+            grid:          the dimensions of a grid of points to generate
                            (alternative to specifying n)
         '''
         # create rays array
@@ -206,7 +206,7 @@ class Source(Plane):
 
                 # map target points to source (assumes source is more
                 # or less rectangular and facing the target region)
-                print 'warning: usability of grid ray generation untested for nonpoint source!'
+                print('warning: usability of grid ray generation untested for nonpoint source!')
                 srcPnts = np.zeros(targPnts.shape, dt)
                 rng0 = self.grid([0], [0])
                 rng1 = self.grid([1], [1])

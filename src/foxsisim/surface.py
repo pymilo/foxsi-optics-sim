@@ -18,19 +18,19 @@ class Surface:
         Constructor
         '''
         pass
-    
+
     def inRange(self,u,v):
         '''
-        Are the u and v parameters in the desired range?    
+        Are the u and v parameters in the desired range?
         '''
         return True
-    
+
     def existsInOctant(self,octant):
         '''
         Returns whether the surface exists in the supplied octant ***OUTDATED***
         '''
         return False
-    
+
     def rayIntersect(self, ray):
         '''
         Returns the first intersection of a ray with the surface
@@ -38,19 +38,19 @@ class Surface:
         Otherwise, returns None.
         '''
         return None
-    
+
     def x(self,u,v):
         '''
         Parametric equation for x
         '''
         return 0
-    
+
     def y(self,u,v):
         '''
         Parametric equation for y
         '''
         return 0
-    
+
     def z(self,u,v):
         '''
         Parametric equation for z
@@ -61,14 +61,14 @@ class Surface:
         '''
         First partial derivative with respect to u
         '''
-        return np.array((0,0,0)) 
-            
+        return np.array((0,0,0))
+
     def dv(self,u,v):
         '''
         First partial derivative with respect to v
         '''
         return np.array((0,0,0))
-            
+
     def getPoint(self,u,v):
         '''
         Returns a point for parameters u and v
@@ -81,4 +81,3 @@ class Surface:
         '''
         cross = np.cross(self.du(u,v),self.dv(u,v))
         return cross / norm(cross)
-    

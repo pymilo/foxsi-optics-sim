@@ -3,9 +3,9 @@ Created on Jul 11, 2011
 
 @author: rtaylor
 '''
-from segment import Segment
-from segmentp import Segmentp
-from segmenth import Segmenth
+from foxsisim.segment import Segment
+from foxsisim.segmentp import Segmentp
+from foxsisim.segmenth import Segmenth
 
 from math import tan, pi
 
@@ -13,7 +13,7 @@ class Shell:
     '''
     A shell consists of two segments, one in the front and one behind.
     The base location of the front segment has a smaller z value than that
-    of the back segement. Thus, rays coming from sources in the negative 
+    of the back segement. Thus, rays coming from sources in the negative
     z range will enter the front end first.
     '''
 
