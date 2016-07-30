@@ -258,7 +258,7 @@ class Module:
         '''
         # must modify 'a' so that we dont return points from the core
         r0 = self.shells[0].back.r1
-        r1 = self.core.r1
+        r1 = self.coreFaces[0].radius
         a0 = (r1 / r0) ** 2  # the 'a' value that gives r1=sqrt(a)*r0
         adiff = 1 - a0
         for i in range(len(a)):
