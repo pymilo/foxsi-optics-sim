@@ -140,7 +140,7 @@ class Detector(Plane):
 
             # get color
             if isinstance(ray.tag, Source):
-                colorSum[ypix, xpix, :] += ray.tag.colorAtPoint([ray.src])
+                colorSum[ypix, xpix, :] += ray.tag.colorAtPoint([ray.src]).astype(int)
             else:
                 colorSum[ypix, xpix, :] += np.array((1, 1, 1))  # assume white
 
@@ -150,7 +150,7 @@ class Detector(Plane):
                     counts[ypix, xpix] += 1
             else:
                 counts[ypix, xpix] += 1
-
+                
         # average the colors
         for x in range(dims[0]):
             for y in range(dims[1]):

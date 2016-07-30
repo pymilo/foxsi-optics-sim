@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from foxsisim.module import Module
 from foxsisim.detector import Detector
 from foxsisim.source import Source

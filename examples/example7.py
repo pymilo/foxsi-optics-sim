@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import foxsisim.reflectivity as ref
 import matplotlib.pyplot as plt
 from foxsisim.plotting import plot
