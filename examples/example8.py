@@ -4,6 +4,7 @@ from foxsisim.detector import Detector
 from foxsisim.source import Source
 from foxsisim.plotting import scatterHist
 from foxsisim.plotting import plot
+import matplotlib.pyplot as plt
 import numpy as np
 
 if __name__ == '__main__':
@@ -33,3 +34,4 @@ if __name__ == '__main__':
 
     plot(detector)
     scatterHist(rays)
+    plt.show()
