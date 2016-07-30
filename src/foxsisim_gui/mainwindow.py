@@ -306,7 +306,7 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
                 item = QTableWidgetItem(QString.number(radius,precision=precision))
                 self.tableWidget.setItem(row,0,item)
             else: # invalid index
-                print 'error: update tableWidget_itemChanged method'
+                print('error: update tableWidget_itemChanged method')
 
         # reset the recursion preventer
         self.tableItemChanging = False

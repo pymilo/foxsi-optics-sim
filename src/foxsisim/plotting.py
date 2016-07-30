@@ -93,7 +93,13 @@ def scatterHist(rays, figure=None, binwidth=0.01, colorBounces=True):
         axHisty.set_ylim(axScatter.get_ylim())
 
 def plot(data_object, figureNum=0, **kwargs):
-    '''Create a plot of the given data object'''
+    '''
+    Create a plot of the given data object
+    Options are:
+        - Reflectivity
+        - Source
+        - Detector
+    '''
 
     if isinstance(data_object, Reflectivity):
         plt.figure(figureNum)

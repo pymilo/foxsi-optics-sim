@@ -1,4 +1,5 @@
-# June 2014, @milo & @Steven 
+#!/usr/bin/env python
+# June 2014, @milo & @Steven
 ''' Example 2 using the geometry of the Hyp and Par. This should show
 perfect focusing with all rays falling in a point.'''
 
@@ -28,7 +29,7 @@ if __name__ == '__main__':
 
     # plot detector pixels
     plot(detector)
-    
+
     # create scatter plot
     detectorRays = detector.rays
     fig2 = plt.figure(figsize=(5,5))
@@ -36,4 +37,3 @@ if __name__ == '__main__':
 
     # show
     plt.show()
-

@@ -8,7 +8,7 @@ import numpy as np
 from numpy import dot
 from numpy.linalg import norm
 from numpy.random import random
-from reflectivity import Reflectivity
+from foxsisim.reflectivity import Reflectivity
 from scipy.integrate import quad
 from scipy import stats
 
@@ -47,7 +47,7 @@ def angle_of_incidence(x, normal):
 
 def grazing_angle(x, normal):
     '''
-    Calculate the grazing angle between a vector and the surface. 
+    Calculate the grazing angle between a vector and the surface.
     The complement to the angle of incidence.
     '''
     return halfpi - acos(dot(-x, normal) / (norm(x) * norm(normal)))

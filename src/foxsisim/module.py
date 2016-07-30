@@ -3,10 +3,10 @@ Created on Jul 19, 2011
 
 @author: rtaylor
 '''
-from segment import Segment
-from shell import Shell
-from circle import Circle
-from mymath import reflect, calcShellAngle
+from foxsisim.segment import Segment
+from foxsisim.shell import Shell
+from foxsisim.circle import Circle
+from foxsisim.mymath import reflect, calcShellAngle
 from math import tan, atan, cos, sqrt
 from numpy.linalg import norm
 
@@ -258,7 +258,7 @@ class Module:
         '''
         # must modify 'a' so that we dont return points from the core
         r0 = self.shells[0].back.r1
-        r1 = self.core.r1
+        r1 = self.coreFaces[0].radius
         a0 = (r1 / r0) ** 2  # the 'a' value that gives r1=sqrt(a)*r0
         adiff = 1 - a0
         for i in range(len(a)):
