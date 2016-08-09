@@ -97,7 +97,7 @@ class Module:
         Takes an array of rays and passes them through the front end of
         the module.
         '''
-        # print 'Module: passing ',len(rays),' rays'
+        # print('Module: passing ',len(rays),' rays')
 
         # get all module surfaces
         allSurfaces = self.getSurfaces()
@@ -123,7 +123,7 @@ class Module:
                 if ray.pos[2] < self.coreFaces[0].center[2]:
                     sol = self.coreFaces[0].rayIntersect(ray)
                     if sol is not None:
-                        print("ray hit face 0")
+                        #print("ray hit face 0")
                         ray.pos = ray.getPoint(sol[2])
                         ray.bounces += 1
                         ray.dead = True
@@ -135,7 +135,7 @@ class Module:
                 elif ray.pos[2] > self.coreFaces[1].center[2]:
                     sol = self.coreFaces[1].rayIntersect(ray)
                     if sol is not None:
-                        print("ray hit face 1")
+                        #print("ray hit face 1")
                         ray.pos = ray.getPoint(sol[2])
                         ray.bounces += 1
                         ray.dead = True
@@ -172,12 +172,12 @@ class Module:
                     ray.pos = ray.getPoint(bestSol[2])
                     ray.hist.append(ray.pos)
                     ray.bounces += 1
-                    print("%i ray bounce number %i" % (ray.num, ray.bounces))
+                    #print("%i ray bounce number %i" % (ray.num, ray.bounces))
 
                     x = reflect(ray.ori,
                                 bestSurf.getNormal(bestSol[0], bestSol[1]),
                                 ray.energy)
-                    print(x)
+                    #print(x)
                     # if reflected
                     if x is not None:
                         # update ori to unit vector reflection
@@ -185,7 +185,7 @@ class Module:
                     # otherwise, no reflection means ray is dead
                     else:
                         ray.dead = True
-                        print("%i ray killed by reflect" % ray.num)
+                        #print("%i ray killed by reflect" % ray.num)
                         break
 
                     # knowing the surface it has just hit, we can

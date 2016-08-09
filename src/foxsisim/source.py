@@ -94,6 +94,7 @@ class Source(Plane):
     def plotImage(self, figureNum=1):
         '''
         Displays the source background to screen
+        In case you loaded an Image as your source
         '''
         plt.figure(figureNum)
         plt.imshow(self.pixels)
