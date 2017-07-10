@@ -7,6 +7,7 @@ from foxsisim.segment import Segment
 from foxsisim.shell import Shell
 from foxsisim.circle import Circle
 from foxsisim.mymath import reflect, calcShellAngle
+from foxsisim.ray import Ray
 from math import tan, atan, cos, sqrt
 from numpy.linalg import norm
 import numpy as np
@@ -61,11 +62,11 @@ class Module:
             if core_radius is None:
                 r0 = self.shells[-1].front.r0
                 r1 = r0 - seglen * tan(4 * angles[-1])
-                #ang = atan((r0 - r1) / (2 * seglen))
+                # ang = atan((r0 - r1) / (2 * seglen))
             else:
                 r0 = core_radius
                 r1 = core_radius
-            #self.core = Segment(base=base, seglen=2 * seglen, ang=0, r0=r0)
+            # self.core = Segment(base=base, seglen=2 * seglen, ang=0, r0=r0)
             self.coreFaces = [Circle(center=base, normal=[0, 0, 1], radius=r0),
                               Circle(center=[base[0], base[1],
                                              base[2] + 2 * seglen],
@@ -89,16 +90,16 @@ class Module:
         surfaces = []
         for shell in self.shells:
             surfaces.extend(shell.getSurfaces())
-        #surfaces.append(self.core)
+        # surfaces.append(self.core)
         surfaces.extend(self.coreFaces)
-        return(surfaces)
+        return (surfaces)
 
     def passRays(self, rays, robust=False):
         '''
         Takes an array of rays and passes them through the front end of
         the module.
         '''
-        #print('Module: passing ',len(rays),' rays')
+        # print('Module: passing ',len(rays),' rays')
 
         # get all module surfaces
         allSurfaces = self.getSurfaces()
@@ -111,7 +112,7 @@ class Module:
             # innermost shell
             if i == len(self.shells) - 1:
                 regions[i] = shell.getSurfaces()
-                #regions[i].append(self.core)
+                # regions[i].append(self.core)
             else:
                 # outer shell (reflective side facing region)
                 regions[i] = shell.getSurfaces()
@@ -119,13 +120,13 @@ class Module:
                 regions[i].extend(self.shells[i + 1].getSurfaces())
 
         for ray in rays:
-            #print(ray.des)
+            # print(ray.des)
             if self.shield is not None:
                 # skip rays that hit a core face
                 if ray.pos[2] < self.coreFaces[0].center[2]:
                     sol = self.coreFaces[0].rayIntersect(ray)
                     if sol is not None:
-                        #print("ray hit face 0")
+                        # print("ray hit face 0")
                         ray.pos = ray.getPoint(sol[2])
                         ray.bounces += 1
                         ray.dead = True
@@ -137,7 +138,7 @@ class Module:
                 elif ray.pos[2] > self.coreFaces[1].center[2]:
                     sol = self.coreFaces[1].rayIntersect(ray)
                     if sol is not None:
-                        #print("ray hit face 1")
+                        # print("ray hit face 1")
                         ray.pos = ray.getPoint(sol[2])
                         ray.bounces += 1
                         ray.dead = True
@@ -174,12 +175,12 @@ class Module:
                     ray.pos = ray.getPoint(bestSol[2])
                     ray.hist.append(ray.pos)
                     ray.bounces += 1
-                    #print("%i ray bounce number %i" % (ray.num, ray.bounces))
-                    #print(ray.pos)
+                    # print("%i ray bounce number %i" % (ray.num, ray.bounces))
+                    # print(ray.pos)
                     x = reflect(ray.ori,
                                 bestSurf.getNormal(bestSol[0], bestSol[1]),
                                 ray.energy)
-                    #print('x = ',x)
+                    # print('x = ',x)
                     # if reflected
                     if x is not None:
                         # update ori to unit vector reflection
@@ -187,7 +188,7 @@ class Module:
                     # otherwise, no reflection means ray is dead
                     else:
                         ray.dead = True
-                        #print("%i ray killed by reflect" % ray.num)
+                        # print("%i ray killed by reflect" % ray.num)
                         break
 
                     # knowing the surface it has just hit, we can
@@ -209,8 +210,8 @@ class Module:
                 # if no intersection, ray can exit module
                 else:
                     break
-            #print(ray.hist)
-            #print(ray.des)
+                    # print(ray.hist)
+                    # print(ray.des)
 
     def plot2D(self, axes, color='b'):
         '''
@@ -218,17 +219,17 @@ class Module:
         '''
         for shell in self.shells:
             shell.plot2D(axes, color)
-        #print(self.coreFaces[0].center)
-        #print(self.coreFaces[1].center)
+        # print(self.coreFaces[0].center)
+        # print(self.coreFaces[1].center)
         if self.shield is not None:
             # plot core
-            #self.core.plot2D(axes, color)
-            #base = self.core.base
+            # self.core.plot2D(axes, color)
+            # base = self.core.base
             r0 = self.coreFaces[0].radius
             r1 = self.coreFaces[1].radius
             z0 = self.coreFaces[0].center[2]
             z1 = self.coreFaces[1].center[2]
-            #seglen = self.core.seglen
+            # seglen = self.core.seglen
             axes.plot((z0, z0), (r0, -r0), '-' + color)
             axes.plot((z1, z1), (r1, -r1), '-' + color)
 
@@ -270,9 +271,38 @@ class Module:
         return self.shells[0].targetBack(a, b)
 
     def save_rays(list_of_rays, filename='list_of_rays.csv'):
-        with open(filename,'w') as f:
-            f.write('index, position, orientation, source, destination, tag, bounces, energy \n')
+        with open(filename, 'w') as f:
+            f.write('index, position[0], position[1], position[2], orientation[0], orientation[1], \
+            orientation[2], source[0], source[1], source[2], dest[0], dest[1], dest[2], dead, tag, bounces, energy \n')
             for i, ray in enumerate(list_of_rays):
-                f.write("{index},{pos},{ori},{src},{des},{dead},{tag},{bounces},{energy},\n".format(
-                    index=i,pos=ray.pos,ori=ray.ori,src=ray.src,des=ray.des,dead=ray.dead,\
-                    tag=ray.tag,bounces=ray.bounces,energy=ray.energy))
+                f.write('{index},{pos0},{pos1},{pos2},{ori0},{ori1},{ori2},{src0},{src1},{src2},\
+                {des0},{des1},{des2},{dead},{tag},{bounces},{energy},\n'.format(
+                    index=i, pos0=ray.pos[0], pos1=ray.pos[1], pos2=ray.pos[2], ori0=ray.ori[0], ori1=ray.ori[1],
+                    ori2=ray.ori[2],
+                    src0=ray.src[0], src1=ray.src[1], src2=ray.src[2], des0=ray.des[0], des1=ray.des[1],
+                    des2=ray.des[2],
+                    dead=ray.dead, tag=ray.tag, bounces=ray.bounces, energy=ray.energy))
+        f.close()
+        print('Rays saved in file : '+filename)
+
+    def load_rays(filename='list_of_rays.csv'):
+        with open(filename, 'r') as f:
+            header = f.readline()
+            list_of_rays = []
+            for line in f.readlines():
+                nray = Ray()
+                index, pos0, pos1, pos2, ori0, ori1, ori2, src0, src1, src2, des0, des1, \
+                    des2, dead, tag, bounces, energy, none = line.strip().split(',')
+                # loading values to nray.
+                nray.pos = np.array((pos0, pos1, pos2), dtype='float')
+                nray.ori = np.array((ori0, ori1, ori2), dtype='float')
+                nray.src = np.array((src0, src1, src2), dtype='float')
+                nray.des = np.array((des0, des1, des2), dtype='float')
+                nray.dead = dead
+                nray.tag = tag
+                nray.bounces = bounces
+                nray.energy = energy
+                list_of_rays.append(nray)
+        f.close()
+        print('Rays from '+filename+' loaded.')
+        return list_of_rays
