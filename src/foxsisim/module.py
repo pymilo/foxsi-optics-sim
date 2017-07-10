@@ -9,6 +9,7 @@ from foxsisim.circle import Circle
 from foxsisim.mymath import reflect, calcShellAngle
 from math import tan, atan, cos, sqrt
 from numpy.linalg import norm
+import numpy as np
 
 
 class Module:
@@ -118,7 +119,7 @@ class Module:
                 regions[i].extend(self.shells[i + 1].getSurfaces())
 
         for ray in rays:
-            print(ray.des)
+            #print(ray.des)
             if self.shield is not None:
                 # skip rays that hit a core face
                 if ray.pos[2] < self.coreFaces[0].center[2]:
@@ -173,12 +174,12 @@ class Module:
                     ray.pos = ray.getPoint(bestSol[2])
                     ray.hist.append(ray.pos)
                     ray.bounces += 1
-                    print("%i ray bounce number %i" % (ray.num, ray.bounces))
-                    print(ray.pos)
+                    #print("%i ray bounce number %i" % (ray.num, ray.bounces))
+                    #print(ray.pos)
                     x = reflect(ray.ori,
                                 bestSurf.getNormal(bestSol[0], bestSol[1]),
                                 ray.energy)
-                    print('x = ',x)
+                    #print('x = ',x)
                     # if reflected
                     if x is not None:
                         # update ori to unit vector reflection
@@ -186,7 +187,7 @@ class Module:
                     # otherwise, no reflection means ray is dead
                     else:
                         ray.dead = True
-                        print("%i ray killed by reflect" % ray.num)
+                        #print("%i ray killed by reflect" % ray.num)
                         break
 
                     # knowing the surface it has just hit, we can
@@ -208,8 +209,8 @@ class Module:
                 # if no intersection, ray can exit module
                 else:
                     break
-            print(ray.hist)
-            print(ray.des)
+            #print(ray.hist)
+            #print(ray.des)
 
     def plot2D(self, axes, color='b'):
         '''
@@ -217,8 +218,8 @@ class Module:
         '''
         for shell in self.shells:
             shell.plot2D(axes, color)
-        print(self.coreFaces[0].center)
-        print(self.coreFaces[1].center)
+        #print(self.coreFaces[0].center)
+        #print(self.coreFaces[1].center)
         if self.shield is not None:
             # plot core
             #self.core.plot2D(axes, color)
@@ -267,3 +268,11 @@ class Module:
         for i in range(len(a)):
             a[i] = a[i] * adiff + a0
         return self.shells[0].targetBack(a, b)
+
+    def save_rays(list_of_rays, filename='list_of_rays.csv'):
+        with open(filename,'w') as f:
+            f.write('index, position, orientation, source, destination, tag, bounces, energy \n')
+            for i, ray in enumerate(list_of_rays):
+                f.write("{index},{pos},{ori},{src},{des},{dead},{tag},{bounces},{energy},\n".format(
+                    index=i,pos=ray.pos,ori=ray.ori,src=ray.src,des=ray.des,dead=ray.dead,\
+                    tag=ray.tag,bounces=ray.bounces,energy=ray.energy))
