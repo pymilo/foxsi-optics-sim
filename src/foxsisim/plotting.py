@@ -116,11 +116,12 @@ def plot(data_object, figureNum=0, **kwargs):
 def _plotReflectivity(reflectivity):
     energy_range = reflectivity.energy_range()
     angle_range = reflectivity.angle_range()
-    energies, angles = np.mgrid[energy_range[0]:energy_range[1]:100j,
-                                    angle_range[0]:angle_range[1]:200j]
-    z = reflectivity.value(energies, angles)
+    energies = reflectivity.energy_ax
+    angles = reflectivity.angle_ax
+
+    z = reflectivity.func(angles, energies)
     extent = (energy_range[0], energy_range[1],
-              angle_range[0] + reflectivity._points[1, 1], angle_range[1])
+              angle_range[0], angle_range[1])
     # can't plot image on log axes
     # im = plt.imshow(z, origin='lower', extent=extent,
     #                norm=LogNorm(vmin=0.01, vmax=1))
@@ -133,7 +134,7 @@ def _plotReflectivity(reflectivity):
     plt.xlabel('Energy [keV]')
     plt.title('Reflectivity of ' + reflectivity.material)
     # plt.colorbar(im)
-    plt.colorbar(cs, shrink=0.8)
+    #plt.colorbar(cs, shrink=0.8)
 
 
 def _plotSourceSpectrum(source):

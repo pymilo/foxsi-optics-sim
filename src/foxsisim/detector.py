@@ -135,8 +135,8 @@ class Detector(Plane):
             scale1 = np.dot(disp, unit1) / len1
             # length ratio of projection to ax2
             scale2 = np.dot(disp, unit2) / len2
-            xpix = dims[1] * scale1
-            ypix = dims[0] * (1 - scale2)
+            xpix = (dims[1] * scale1).astype(int)
+            ypix = (dims[0] * (1 - scale2)).astype(int)
 
             # get color
             if isinstance(ray.tag, Source):
