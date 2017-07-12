@@ -250,7 +250,10 @@ class Source(Plane):
 
         # add energies to rays
         if self._spectrum is not None:
-            energies = genCustomRands(self._spectrum, len(rays))
+            if type(self._spectrum) is np.ndarray:
+                energies = self._spectrum
+            else:
+                energies = genCustomRands(self._spectrum, len(rays))
             for energy, ray in zip(energies, rays):
                 ray.energy = energy
 
