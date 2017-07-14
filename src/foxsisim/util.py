@@ -36,10 +36,10 @@ def load_rays(filename='list_of_rays.csv'):
             nray.ori = np.array((ori0, ori1, ori2), dtype='float')
             nray.src = np.array((src0, src1, src2), dtype='float')
             nray.des = np.array((des0, des1, des2), dtype='float')
-            nray.dead = dead
+            nray.dead = (dead == 'True')
             nray.tag = tag
-            nray.bounces = bounces
-            nray.energy = energy
+            nray.bounces = int(bounces)
+            nray.energy = None if energy == 'None' else float(energy)
             list_of_rays.append(nray)
     f.close()
     print('Rays from '+filename+' loaded.')
