@@ -21,7 +21,7 @@ import h5py
 class Reflectivity:
     """Provides reflectivities as a function of angle (in degrees) and energy
         (in keV)"""
-    def __init__(self, material='Ni'):
+    def __init__(self, material='Ir'):
         path = os.path.dirname(foxsisim.__file__) + '/data/'
         h = h5py.File(os.path.join(path, "reflectivity_data.hdf5"), 'r')
         self.data = h['reflectivity/' + material.lower()][:]
