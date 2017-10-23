@@ -34,7 +34,7 @@ def reflect(x, normal, energy):
     if incident_angle > halfpi:
         return None
     if energy is not None:
-        if random(1)[0] > mirror_reflectivity.value(energy, np.rad2deg(graze_angle)):
+        if random(1)[0] > mirror_reflectivity.func(np.rad2deg(graze_angle), energy):
             return None
     return x - 2 * dot(x, normal) * normal
 
