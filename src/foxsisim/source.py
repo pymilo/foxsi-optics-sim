@@ -23,6 +23,8 @@ class Source(Plane):
     (source 'at infinity' projecting parallel rays), 'point' (a point at some
     real coordinate in 3-space), and 'nonpoint' (a rectangle centered at some
     real coordinate in 3-space).
+
+    Default tag is Source.
     '''
 
     def __init__(self,
@@ -33,7 +35,8 @@ class Source(Plane):
                  type='atinf',
                  color=[1, 1, 1],
                  pixels=None,
-                 spectrum=None
+                 spectrum=None,
+                 tag='Source'
                  ):
         '''
         Constructor
@@ -50,7 +53,6 @@ class Source(Plane):
         '''
         # normal should be length 1
         normal = normal / norm(normal)
-
         # check type
         if type not in ['atinf', 'point', 'nonpoint']:
             raise ValueError('invalid source type')
@@ -79,6 +81,7 @@ class Source(Plane):
         self.color = np.array(color, np.dtype('f4'))
         self.pixels = pixels
         self._spectrum = spectrum
+        self.tag = tag
         self._maximum_energy = 1000  # this is the maximum energy considered
 
     def loadImage(self, file=None):
@@ -245,7 +248,7 @@ class Source(Plane):
 
         # tag the rays as coming from this source
         for i, ray in enumerate(rays):
-            ray.tag = self
+            ray.update_tag(self.tag)
             ray.num = i
 
         # add energies to rays

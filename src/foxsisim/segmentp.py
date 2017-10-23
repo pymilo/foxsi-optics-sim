@@ -29,7 +29,8 @@ class Segmentp(Surface):
                  seglen = 30.0,
                  ang = 0.006,
                  r0 = 5.5,
-                 r1 = None
+                 r1 = None,
+                 tag='Pa'
                  ):
         '''
         Constructor
@@ -47,6 +48,7 @@ class Segmentp(Surface):
         self.focal = focal
         self.seglen = seglen
         self.ang = ang
+        self.tag = tag
         ''' Vanspeybroeck and Chase Parameters '''
         self.e = cos(4*ang) * (1 + (tan(4*ang)*tan(3*ang)))
         self.d = focal * tan(4*ang) * tan( (4*ang) - 3*ang)

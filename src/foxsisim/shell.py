@@ -40,9 +40,9 @@ class Shell:
             # Hyperboloid segment
             self.back = Segmenth(base=backBase, focal=focal, seglen=seglen, ang=ang, r0=r)
         else:
-            self.front = Segment(base=base, seglen=seglen, ang=ang, r1=r)
+            self.front = Segment(base=base, seglen=seglen, ang=ang, r1=r, tag='LF')
             backBase = [base[0], base[1], base[2]+seglen]
-            self.back = Segment(base=backBase, seglen=seglen, ang=3*ang, r0=r)
+            self.back = Segment(base=backBase, seglen=seglen, ang=3*ang, r0=r, tag='LB')
 
     def getSurfaces(self):
         '''
