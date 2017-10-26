@@ -112,7 +112,7 @@ class Detector(Plane):
                     ray.dead = True
                     ray.bounces += 0
                     ray.hist.append(ray.pos)
-                    print(self.tag)
+                    #print(self.tag)
                     ray.update_tag(self.tag)
                     self.rays.append(ray)
 
