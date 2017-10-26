@@ -22,6 +22,8 @@ class Segmenth(Surface):
     the user may supply a value for r1, in which case the wide radius (r0)
     is automatically recomputed. When changing segment dimensions after
     instantiation, use the updateDims method.
+
+    Default tag is Hy.
     '''
 
     def __init__(self,
@@ -30,7 +32,8 @@ class Segmenth(Surface):
                  seglen=30.0,
                  ang=0.006,
                  r0=5.5,
-                 r1=None
+                 r1=None,
+                 tag='Hy'
                  ):
         '''
         Constructor
@@ -48,7 +51,8 @@ class Segmenth(Surface):
         self.focal = focal
         self.seglen = seglen
         self.ang = ang
-        ''' Vanspeybroeck and Chase Parameters '''
+        self.tag = tag
+        # Vanspeybroeck and Chase Parameters
         self.e = cos(4 * ang) * (1 + (tan(4 * ang) * tan(3 * ang)))
         self.d = focal * tan(4 * ang) * tan((4 * ang) - 3 * ang)
         self.updateDims(r0, r1)

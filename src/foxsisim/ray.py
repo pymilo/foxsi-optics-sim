@@ -110,3 +110,10 @@ class Ray:
         # move ray
         self.pos = self.getPoint(t)
         return True
+
+    def update_tag(self, tag):
+        """Update the list of tags."""
+        if self.tag is None:
+            self.tag = tag
+        else:
+            self.tag += '-' + tag

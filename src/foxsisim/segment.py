@@ -21,6 +21,8 @@ class Segment(Surface):
     the user may supply a value for r1, in which case the wide radius (r0)
     is automatically recomputed. When changing segment dimensions after
     instantiation, use the updateDims method.
+
+    Default tag is Se.
     '''
 
     def __init__(self,
@@ -28,7 +30,8 @@ class Segment(Surface):
                  seglen = 30.0,
                  ang = 0.006,
                  r0 = 5.5,
-                 r1 = None
+                 r1 = None,
+                 tag = 'Se'
                  ):
         '''
         Constructor
@@ -46,6 +49,7 @@ class Segment(Surface):
         self.seglen = seglen
         self.ang = ang
         self.updateDims(r0,r1)
+        self.tag = tag
 
     def updateDims(self, r0, r1 = None):
         '''

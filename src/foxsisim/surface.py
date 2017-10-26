@@ -17,6 +17,7 @@ class Surface:
         '''
         Constructor
         '''
+        self.tag = 'Surface'
         pass
 
     def inRange(self,u,v):

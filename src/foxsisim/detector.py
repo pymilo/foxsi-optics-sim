@@ -25,6 +25,7 @@ class Detector(Plane):
                  reso=[256, 256],
                  pixels=None,
                  freqs=None,
+                 tag='D'
                  ):
         '''
         Constructor
@@ -41,7 +42,6 @@ class Detector(Plane):
         '''
         # normal should be length 1
         normal = normal / norm(normal)
-
         # create rectangular dimensions
         if normal[0] == 0 and normal[2] == 0:  # normal is in y direction
             sign = normal[1]  # 1 or -1
@@ -62,6 +62,7 @@ class Detector(Plane):
         self.pixels = pixels
         self.freqs = freqs
         self.rays = []
+        self.tag = tag
 
         # bring in pixels
         if pixels is None:
@@ -111,6 +112,8 @@ class Detector(Plane):
                     ray.dead = True
                     ray.bounces += 0
                     ray.hist.append(ray.pos)
+                    print(self.tag)
+                    ray.update_tag(self.tag)
                     self.rays.append(ray)
 
     def _makeImage(self, energy_range=None):
@@ -139,10 +142,10 @@ class Detector(Plane):
             ypix = (dims[0] * (1 - scale2)).astype(int)
 
             # get color
-            if isinstance(ray.tag, Source):
-                colorSum[ypix, xpix, :] += ray.tag.colorAtPoint([ray.src]).astype(int)
-            else:
-                colorSum[ypix, xpix, :] += np.array((1, 1, 1))  # assume white
+            #if ray.tag[0:1] == Source.tag:
+            #    colorSum[ypix, xpix, :] += Source.colorAtPoint([ray.src]).astype(int)
+            #else:
+            colorSum[ypix, xpix, :] += np.array((1, 1, 1))  # assume white
 
             if energy_range is not None:
                 if ((ray.energy < energy_range[1]) &
