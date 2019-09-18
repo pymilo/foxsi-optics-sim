@@ -1,0 +1,37 @@
+{
+    "description": "<p>Ray-tracing simulation code for grazing incidence mirrors.</p>",
+    "license": "other-open",
+    "title": "foxsi/foxsi-optics-sim: First working release",
+    "version": "v1.0",
+    "upload_type": "software",
+    "publication_date": "2019-09-18",
+    "creators": [
+        {
+            "orcid": "0000-0001-6127-795X",
+            "affiliation": "NASA/GSFC",
+            "name": "Steven D. Christe"
+        },
+        {
+            "orcid": "0000-0002-8203-4794",
+            "affiliation": "University of California - Berkeley",
+            "name": "Milo Buitrago-Casas"
+        },
+        {
+            "affiliation": "NASA/GSFC",
+            "name": "Robert Taylor"
+        },
+    ],
+    "access_right": "open",
+    "related_identifiers": [
+        {
+            "scheme": "url",
+            "identifier": "https://github.com/foxsi/foxsi-optics-sim/tree/v1.0",
+            "relation": "isSupplementTo"
+        },
+        {
+            "scheme": "doi",
+            "identifier": "10.5281/zenodo.3445459",
+            "relation": "isVersionOf"
+        }
+    ]
+}
