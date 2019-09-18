@@ -18,3 +18,7 @@ All plots are normalized to the maximum flux of doubly reflected rays
 in each case. The gray dashed vertical lines indicate the minimum (left) 
 and maximum (right) distance from the optical axis to the edge of 
 the squared detector.
+
+The code to generate this figure can be found at [gallery_example5](gallery_example5.py)
+
+
