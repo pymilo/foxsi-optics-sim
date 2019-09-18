@@ -193,6 +193,20 @@ class Module:
                     # print(ray.hist)
                     # print(ray.des)
 
+            sol = self.coreFaces[1].rayIntersect(ray)
+            if sol is not None:
+                # print("ray hit rear blocker")
+                ray.pos = ray.getPoint(sol[2])
+                #ray.bounces += 1
+                ray.dead = True
+                ray.des = ray.pos
+                ray.hist.append(ray.pos)
+                ray.update_tag(self.coreFaces[1].tag)
+                continue
+            else:
+                ray.moveToZ(self.coreFaces[1].center[2])
+                #ray.hist.append(ray.pos)
+
     def plot2D(self, axes, color='b'):
         '''
         Plots a 2d cross section of the module
