@@ -124,35 +124,8 @@ class Module:
                 regions[i].extend(self.shells[i + 1].getSurfaces())
 
         for ray in rays:
-            # print(ray.des)
-            if self.shield is not None:
-                # skip rays that hit a core face
-                if ray.pos[2] < self.coreFaces[0].center[2]:
-                    sol = self.coreFaces[0].rayIntersect(ray)
-                    if sol is not None:
-                        # print("ray hit face 0")
-                        ray.pos = ray.getPoint(sol[2])
-                        ray.bounces += 1
-                        ray.dead = True
-                        ray.des = ray.pos
-                        ray.hist.append(ray.pos)
-                        ray.update_tag(self.coreFaces[0].tag)
-                        continue
-                    else:
-                        ray.moveToZ(self.coreFaces[0].center[2])
-                elif ray.pos[2] > self.coreFaces[1].center[2]:
-                    sol = self.coreFaces[1].rayIntersect(ray)
-                    if sol is not None:
-                        # print("ray hit face 1")
-                        ray.pos = ray.getPoint(sol[2])
-                        ray.bounces += 1
-                        ray.dead = True
-                        ray.des = ray.pos
-                        ray.hist.append(ray.pos)
-                        ray.update_tag(self.coreFaces[1].tag)
-                        continue
-                    else:
-                        ray.moveToZ(self.coreFaces[1].center[2])
+            # move ray to the front of the optics
+            ray.moveToZ(self.coreFaces[0].center[2])
 
             # reset surfaces
             surfaces = [s for s in allSurfaces]
