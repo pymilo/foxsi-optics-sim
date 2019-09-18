@@ -13,7 +13,7 @@ from foxsisim.module import Module
 from foxsisim.detector import Detector
 from foxsisim.source import Source
 from foxsisim.mymath import * #@UnusedWildImport
-from foxsisim.plotting import scatterHist
+from foxsisim.plotting import scatterHist, plot
 from math import cos
 import numpy as np #@Reimport
 

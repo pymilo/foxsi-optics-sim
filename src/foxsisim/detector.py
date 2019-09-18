@@ -72,6 +72,17 @@ class Detector(Plane):
         elif pixels.shape[0:2] != freqs.shape:
             raise ValueError('pixels and freqs arrays do not correspond')
 
+    def plotImage(self, axes, energy_range=None):
+        '''
+        Displays the source background to screen
+        '''
+        self._makeImage(energy_range=energy_range)
+        axes.imshow(self.pixels)
+        if energy_range:
+            axes.set_title(str(energy_range[0]) + ' - ' + str(energy_range[1]) + ' keV')
+        axes.set_ylabel("Pixels")
+        axes.set_xlabel("Pixels")
+
     def plotSpectrum(self, axes, dE=1, range=[0, 20]):
         '''
         Plot the spectrum of the rays in a region of interest (if available,
