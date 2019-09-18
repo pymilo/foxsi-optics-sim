@@ -1,6 +1,8 @@
 Grazing-Incidence Optics Simulation Tool
 ----------------------------------------
 
+![Measured Ghost Pattern](gallery/gallery_example1.png)
+
 Introduction
 ------------
 
@@ -44,6 +46,13 @@ root directory:
     export PATH=$PATH:"FOXSISIM_DIR/bin"
     export PYTHONPATH=$PYTHONPATH:"FOXSISIM_DIR/lib/python"
 
+Examples and Gallery
+--------------------
+See the example folder for simple scripts on how to run setup and run
+various simulation scenerios.
+
+See the gallery folder for a gallery of different investigations 
+of ghost rays.
 
 Help
 ----
