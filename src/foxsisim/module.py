@@ -63,13 +63,18 @@ class Module:
                 r1 = r0 - seglen * tan(4 * angles[-1])
                 # ang = atan((r0 - r1) / (2 * seglen))
             else:
-                r0 = core_radius
-                r1 = core_radius
+                if isinstance(core_radius,(int,float)):
+                    r0 = core_radius
+                    r1 = core_radius
+                elif isinstance(core_radius,(tuple,list)) and len(core_radius)==2 :
+                    r0 = core_radius[0]
+                    r1 = core_radius[1]
+                else: print('Error: Keyword core_radius must be a number or a 2D tuple')
             # self.core = Segment(base=base, seglen=2 * seglen, ang=0, r0=r0)
             self.coreFaces = [Circle(center=base, normal=[0, 0, 1], radius=r0),
                               Circle(center=[base[0], base[1],
                                              base[2] + 2 * seglen],
-                                     normal=[0, 0, -1], radius=r0)]
+                                     normal=[0, 0, -1], radius=r1)]
         else:
             self.shield = None
 
@@ -119,35 +124,8 @@ class Module:
                 regions[i].extend(self.shells[i + 1].getSurfaces())
 
         for ray in rays:
-            # print(ray.des)
-            if self.shield is not None:
-                # skip rays that hit a core face
-                if ray.pos[2] < self.coreFaces[0].center[2]:
-                    sol = self.coreFaces[0].rayIntersect(ray)
-                    if sol is not None:
-                        # print("ray hit face 0")
-                        ray.pos = ray.getPoint(sol[2])
-                        ray.bounces += 1
-                        ray.dead = True
-                        ray.des = ray.pos
-                        ray.hist.append(ray.pos)
-                        ray.update_tag(self.coreFaces[0].tag)
-                        continue
-                    else:
-                        ray.moveToZ(self.coreFaces[0].center[2])
-                elif ray.pos[2] > self.coreFaces[1].center[2]:
-                    sol = self.coreFaces[1].rayIntersect(ray)
-                    if sol is not None:
-                        # print("ray hit face 1")
-                        ray.pos = ray.getPoint(sol[2])
-                        ray.bounces += 1
-                        ray.dead = True
-                        ray.des = ray.pos
-                        ray.hist.append(ray.pos)
-                        ray.update_tag(self.coreFaces[1].tag)
-                        continue
-                    else:
-                        ray.moveToZ(self.coreFaces[1].center[2])
+            # move ray to the front of the optics
+            ray.moveToZ(self.coreFaces[0].center[2])
 
             # reset surfaces
             surfaces = [s for s in allSurfaces]
@@ -214,6 +192,20 @@ class Module:
                     break
                     # print(ray.hist)
                     # print(ray.des)
+
+            sol = self.coreFaces[1].rayIntersect(ray)
+            if sol is not None:
+                # print("ray hit rear blocker")
+                ray.pos = ray.getPoint(sol[2])
+                #ray.bounces += 1
+                ray.dead = True
+                ray.des = ray.pos
+                ray.hist.append(ray.pos)
+                ray.update_tag(self.coreFaces[1].tag)
+                continue
+            else:
+                ray.moveToZ(self.coreFaces[1].center[2])
+                #ray.hist.append(ray.pos)
 
     def plot2D(self, axes, color='b'):
         '''

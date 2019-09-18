@@ -50,6 +50,7 @@ class Source(Plane):
             color:     color of projected rays
             pixels:    optional numpy array of pixel colors (W x H x 3)
             spectrum:  optional numpy array (2xN) of energy spectrum
+            tag : 'Source' Tag all rays with 'Source', place where the came from.
         '''
         # normal should be length 1
         normal = normal / norm(normal)

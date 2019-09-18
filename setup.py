@@ -15,7 +15,8 @@ guiDir = 'src/foxsisim_gui/'
 scpDir = 'examples/'
 gui = ['foxsisim-gui.py']
 scripts = ['example1.py', 'example2.py', 'example3.py', 'example4.py',
-           'example5.py', 'example6.py', 'example7.py', 'example8.py']
+           'example5.py', 'example6.py', 'example7.py', 'example8.py',
+           'example9.py', 'example10.py']
 
 command = 'pyuic4 -o ' + guiDir + 'ui_mainwindow.py ' + guiDir + 'ui/mainwindow.ui'
 print(command)
