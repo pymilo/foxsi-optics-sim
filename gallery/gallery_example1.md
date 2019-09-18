@@ -12,3 +12,5 @@ The on-axis square represents the FOXSI FOV and the center is the optical axis
 of the FOXSI optic.
 
 See the next gallery example to see a simulated version of this measurement.
+
+

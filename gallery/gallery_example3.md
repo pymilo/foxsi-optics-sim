@@ -13,3 +13,5 @@ the hyperboloid segment respectively.
 
 (Right) A cross-section of the optics module showing the spatial distribution 
 of the singly reflected rays differentiated by color.
+
+The code to generate this figure can be found at [gallery_example3](gallery_example3.py)
