@@ -37,9 +37,9 @@ or using pip while immediately outside the directory
 When installing to local directory, you need to update PATH 
 and PYTHONPATH variables in order to use the foxsisim tools:
 
-For linux:
-1. Open ~/.bashrc in a text editor
-2. Add the following line, where FOXSISIM_DIR is the location of your foxsisim root directory:
+For linux, to the following, first open ~/.bashrc in a text editor and add
+the following two lines where FOXSISIM_DIR is the location of your foxsisim 
+root directory:
    
     export PATH=$PATH:"FOXSISIM_DIR/bin"
     export PYTHONPATH=$PYTHONPATH:"FOXSISIM_DIR/lib/python"
