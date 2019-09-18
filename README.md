@@ -48,10 +48,10 @@ root directory:
 
 Examples and Gallery
 --------------------
-See the example folder for simple scripts on how to run setup and run
+See the [example](examples/) folder for simple scripts on how to run setup and run
 various simulation scenerios.
 
-See the gallery folder for a gallery of different investigations 
+See the [gallery](gallery/README.md) folder for a gallery of different investigations 
 of ghost rays.
 
 Help
