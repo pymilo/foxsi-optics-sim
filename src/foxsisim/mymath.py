@@ -8,7 +8,7 @@ import numpy as np
 from numpy import dot
 from numpy.linalg import norm
 from numpy.random import random
-from reflectivity import Reflectivity
+from foxsisim.reflectivity import Reflectivity
 from scipy.integrate import quad
 from scipy import stats
 
@@ -34,7 +34,7 @@ def reflect(x, normal, energy):
     if incident_angle > halfpi:
         return None
     if energy is not None:
-        if random(1)[0] > mirror_reflectivity.value(energy, np.rad2deg(graze_angle)):
+        if random(1)[0] > mirror_reflectivity.func(np.rad2deg(graze_angle), energy):
             return None
     return x - 2 * dot(x, normal) * normal
 
@@ -47,7 +47,7 @@ def angle_of_incidence(x, normal):
 
 def grazing_angle(x, normal):
     '''
-    Calculate the grazing angle between a vector and the surface. 
+    Calculate the grazing angle between a vector and the surface.
     The complement to the angle of incidence.
     '''
     return halfpi - acos(dot(-x, normal) / (norm(x) * norm(normal)))

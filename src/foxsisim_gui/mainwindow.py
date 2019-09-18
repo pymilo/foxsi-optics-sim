@@ -306,7 +306,7 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
                 item = QTableWidgetItem(QString.number(radius,precision=precision))
                 self.tableWidget.setItem(row,0,item)
             else: # invalid index
-                print 'error: update tableWidget_itemChanged method'
+                print('error: update tableWidget_itemChanged method')
 
         # reset the recursion preventer
         self.tableItemChanging = False
@@ -570,13 +570,15 @@ The FOXSI Optics Simulation Tool (foxsisim) is a python tool to simulate grazing
         Slot for pushButton_3. Detector pixel plot.
         '''
         window = QWidget()
-        window.setWindowTitle('Detector Pixel Plot')
-        l = QVBoxLayout(window)
-        canv = MplCanvas(window, width=5, height=5, dpi=100)
-        l.addWidget(canv)
-        self.detector.plotImage(canv.axes)
-        window.show()
-        self.figures.append(window)
+        plot(self.detector)
+        plt.show()
+        #window.setWindowTitle('Detector Pixel Plot')
+        #l = QVBoxLayout(window)
+        #canv = MplCanvas(window, width=5, height=5, dpi=100)
+        #l.addWidget(canv)
+        #self.detector.plotImage(canv.axes)
+        #window.show()
+        #self.figures.append(window)
 
     def pushButton_4_clicked(self):
         '''

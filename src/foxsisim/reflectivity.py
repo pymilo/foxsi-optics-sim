@@ -1,3 +1,10 @@
+'''
+Created on 2014
+
+@author: StevenChriste
+'''
+
+
 from __future__ import absolute_import
 
 __all__ = ["Reflectivity"]
@@ -5,45 +12,28 @@ __all__ = ["Reflectivity"]
 import numpy as np
 import glob
 import re
-from scipy.interpolate import griddata
+from scipy.interpolate import interp2d
 import os
 import foxsisim
+import h5py
 
 
 class Reflectivity:
     """Provides reflectivities as a function of angle (in degrees) and energy
         (in keV)"""
-    def __init__(self, material='Ni'):
+    def __init__(self, material='Ir'):
         path = os.path.dirname(foxsisim.__file__) + '/data/'
-
-        files = glob.glob(path + "*.txt")
-        # todo: read the energies from the files
-        data = np.loadtxt(files[0], skiprows=2)
-        energy = int(re.findall(r"\D(\d{2})\D", files[0])[0])
-        points = np.column_stack([np.ones(data.shape[0]) * energy, data[:, 0]])
-        values = data[:, 1]
-
-        for this_file in files[1:]:
-            data = np.loadtxt(this_file, skiprows=2)
-            energy = int(re.findall(r"\D(\d{2})\D", this_file)[0])
-            new_points = np.column_stack([np.ones(data.shape[0]) * energy,
-                                          data[:, 0]])
-            points = np.vstack([points, new_points])
-            values = np.hstack([values, data[:, 1]])
-        self._points = points
-        self._values = values
+        h = h5py.File(os.path.join(path, "reflectivity_data.hdf5"), 'r')
+        self.data = h['reflectivity/' + material.lower()][:]
+        self.energy_ax = h['energy'][:]
+        self.angle_ax = h['angle'][:]
         self.material = material
-
-    def value(self, energy, angle):
-        """Given an energy (in keV) and an angle (in degrees) return the
-        reflectivity"""
-        return np.power(10, griddata(self._points, np.log(self._values),
-                                     (energy, angle)))
+        self.func = interp2d(self.angle_ax, self.energy_ax, self.data, kind='cubic')
 
     def energy_range(self):
         """Return the valid range of energies"""
-        return np.array([self._points[:, 0].min(), self._points[:, 0].max()])
+        return np.array([self.energy_ax.min(), self.energy_ax.max()])
 
     def angle_range(self):
         """Return the valud range of angles"""
-        return np.array([self._points[:, 1].min(), self._points[:, 1].max()])
+        return np.array([self.angle_ax.min(), self.angle_ax.max()])

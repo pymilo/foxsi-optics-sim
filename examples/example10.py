@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# June 2014, @milo & @Steven
-''' Example 2 using the geometry of the Hyp and Par. This should show
-perfect focusing with all rays falling in a point.'''
-
 from foxsisim.module import Module
 from foxsisim.detector import Detector
 from foxsisim.source import Source
@@ -15,8 +10,8 @@ if __name__ == '__main__':
 
     # create module/detector/source objects using defaults
     module = Module()
-    detector = Detector()
-    source = Source()
+    detector = Detector(tag='Det')
+    source = Source(tag='Source')
 
     # generate 1000 rays at source
     rays = source.generateRays(module.targetFront, 1000)
@@ -26,14 +21,5 @@ if __name__ == '__main__':
 
     # catch rays at detector
     detector.catchRays(rays)
-
-    # plot detector pixels
-    plot(detector)
-
-    # create scatter plot
-    detectorRays = detector.rays
-    fig2 = plt.figure(figsize=(5,5))
-    scatterHist(detectorRays,fig2)
-
-    # show
-    plt.show()
+    for ray in rays:
+        print("{0} {1} {2}".format(ray.bounces, ray.dead, ray.tag))

@@ -3,9 +3,9 @@ Created on Jul 11, 2011
 
 @author: rtaylor
 '''
-from segment import Segment
-from segmentp import Segmentp
-from segmenth import Segmenth
+from foxsisim.segment import Segment
+from foxsisim.segmentp import Segmentp
+from foxsisim.segmenth import Segmenth
 
 from math import tan, pi
 
@@ -13,7 +13,7 @@ class Shell:
     '''
     A shell consists of two segments, one in the front and one behind.
     The base location of the front segment has a smaller z value than that
-    of the back segement. Thus, rays coming from sources in the negative 
+    of the back segement. Thus, rays coming from sources in the negative
     z range will enter the front end first.
     '''
 
@@ -40,9 +40,9 @@ class Shell:
             # Hyperboloid segment
             self.back = Segmenth(base=backBase, focal=focal, seglen=seglen, ang=ang, r0=r)
         else:
-            self.front = Segment(base=base, seglen=seglen, ang=ang, r1=r)
+            self.front = Segment(base=base, seglen=seglen, ang=ang, r1=r, tag='LF')
             backBase = [base[0], base[1], base[2]+seglen]
-            self.back = Segment(base=backBase, seglen=seglen, ang=3*ang, r0=r)
+            self.back = Segment(base=backBase, seglen=seglen, ang=3*ang, r0=r, tag='LB')
 
     def getSurfaces(self):
         '''

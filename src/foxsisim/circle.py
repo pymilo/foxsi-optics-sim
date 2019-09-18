@@ -3,7 +3,7 @@ Created on Jul 27, 2011
 
 @author: rtaylor
 '''
-from plane import Plane
+from foxsisim.plane import Plane
 import numpy as np
 from numpy.linalg import norm
 

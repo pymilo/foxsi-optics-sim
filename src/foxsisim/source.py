@@ -3,14 +3,14 @@ Created on Jul 11, 2011
 
 @author: rtaylor
 '''
-from plane import Plane
-from ray import Ray
+from foxsisim.plane import Plane
+from foxsisim.ray import Ray
 import numpy as np
 from numpy.linalg import norm
 from random import random
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-from mymath import genCustomRands
+from foxsisim.mymath import genCustomRands
 from scipy.integrate import quad
 
 dt = np.dtype('f8')
@@ -23,6 +23,8 @@ class Source(Plane):
     (source 'at infinity' projecting parallel rays), 'point' (a point at some
     real coordinate in 3-space), and 'nonpoint' (a rectangle centered at some
     real coordinate in 3-space).
+
+    Default tag is Source.
     '''
 
     def __init__(self,
@@ -33,7 +35,8 @@ class Source(Plane):
                  type='atinf',
                  color=[1, 1, 1],
                  pixels=None,
-                 spectrum=None
+                 spectrum=None,
+                 tag='Source'
                  ):
         '''
         Constructor
@@ -46,11 +49,10 @@ class Source(Plane):
             type:      'atinf', 'point', or 'nonpoint'
             color:     color of projected rays
             pixels:    optional numpy array of pixel colors (W x H x 3)
-            spectrum:  optional numpy array (2xN) of energy spectrum 
+            spectrum:  optional numpy array (2xN) of energy spectrum
         '''
         # normal should be length 1
         normal = normal / norm(normal)
-
         # check type
         if type not in ['atinf', 'point', 'nonpoint']:
             raise ValueError('invalid source type')
@@ -79,6 +81,7 @@ class Source(Plane):
         self.color = np.array(color, np.dtype('f4'))
         self.pixels = pixels
         self._spectrum = spectrum
+        self.tag = tag
         self._maximum_energy = 1000  # this is the maximum energy considered
 
     def loadImage(self, file=None):
@@ -94,6 +97,7 @@ class Source(Plane):
     def plotImage(self, figureNum=1):
         '''
         Displays the source background to screen
+        In case you loaded an Image as your source
         '''
         plt.figure(figureNum)
         plt.imshow(self.pixels)
@@ -110,7 +114,7 @@ class Source(Plane):
 
     def colorAtPoint(self, points):
         '''
-        Returns the rgb colors for a list of points. Assumes 
+        Returns the rgb colors for a list of points. Assumes
         each point exists on the source surface.
         '''
         colors = np.zeros((len(points), 3), np.dtype('f4'))
@@ -149,7 +153,7 @@ class Source(Plane):
             targetFunc:    a function that generates points on the target plane
                            (ex: module.targetFront)
             n:             the number of random rays to generate
-            grid:          the dimensions of a grid of points to generate 
+            grid:          the dimensions of a grid of points to generate
                            (alternative to specifying n)
         '''
         # create rays array
@@ -206,7 +210,7 @@ class Source(Plane):
 
                 # map target points to source (assumes source is more
                 # or less rectangular and facing the target region)
-                print 'warning: usability of grid ray generation untested for nonpoint source!'
+                print('warning: usability of grid ray generation untested for nonpoint source!')
                 srcPnts = np.zeros(targPnts.shape, dt)
                 rng0 = self.grid([0], [0])
                 rng1 = self.grid([1], [1])
@@ -244,12 +248,15 @@ class Source(Plane):
 
         # tag the rays as coming from this source
         for i, ray in enumerate(rays):
-            ray.tag = self
+            ray.update_tag(self.tag)
             ray.num = i
 
         # add energies to rays
         if self._spectrum is not None:
-            energies = genCustomRands(self._spectrum, len(rays))
+            if type(self._spectrum) is np.ndarray:
+                energies = self._spectrum
+            else:
+                energies = genCustomRands(self._spectrum, len(rays))
             for energy, ray in zip(energies, rays):
                 ray.energy = energy
 

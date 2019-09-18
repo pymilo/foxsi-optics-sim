@@ -3,8 +3,8 @@ Created on Jul 19, 2011
 
 @author: rtaylor
 '''
-from plane import Plane
-from source import Source
+from foxsisim.plane import Plane
+from foxsisim.source import Source
 import numpy as np
 from numpy.linalg import norm
 
@@ -25,6 +25,7 @@ class Detector(Plane):
                  reso=[256, 256],
                  pixels=None,
                  freqs=None,
+                 tag='D'
                  ):
         '''
         Constructor
@@ -41,7 +42,6 @@ class Detector(Plane):
         '''
         # normal should be length 1
         normal = normal / norm(normal)
-
         # create rectangular dimensions
         if normal[0] == 0 and normal[2] == 0:  # normal is in y direction
             sign = normal[1]  # 1 or -1
@@ -62,6 +62,7 @@ class Detector(Plane):
         self.pixels = pixels
         self.freqs = freqs
         self.rays = []
+        self.tag = tag
 
         # bring in pixels
         if pixels is None:
@@ -122,6 +123,8 @@ class Detector(Plane):
                     ray.dead = True
                     ray.bounces += 0
                     ray.hist.append(ray.pos)
+                    #print(self.tag)
+                    ray.update_tag(self.tag)
                     self.rays.append(ray)
 
     def _makeImage(self, energy_range=None):
@@ -146,14 +149,14 @@ class Detector(Plane):
             scale1 = np.dot(disp, unit1) / len1
             # length ratio of projection to ax2
             scale2 = np.dot(disp, unit2) / len2
-            xpix = dims[1] * scale1
-            ypix = dims[0] * (1 - scale2)
+            xpix = (dims[1] * scale1).astype(int)
+            ypix = (dims[0] * (1 - scale2)).astype(int)
 
             # get color
-            if isinstance(ray.tag, Source):
-                colorSum[ypix, xpix, :] += ray.tag.colorAtPoint([ray.src])
-            else:
-                colorSum[ypix, xpix, :] += np.array((1, 1, 1))  # assume white
+            #if ray.tag[0:1] == Source.tag:
+            #    colorSum[ypix, xpix, :] += Source.colorAtPoint([ray.src]).astype(int)
+            #else:
+            colorSum[ypix, xpix, :] += np.array((1, 1, 1))  # assume white
 
             if energy_range is not None:
                 if ((ray.energy < energy_range[1]) &
@@ -161,7 +164,7 @@ class Detector(Plane):
                     counts[ypix, xpix] += 1
             else:
                 counts[ypix, xpix] += 1
-
+                
         # average the colors
         for x in range(dims[0]):
             for y in range(dims[1]):

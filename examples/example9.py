@@ -2,7 +2,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from datetime import datetime
-
+import numpy.random
 from foxsisim.module import Module
 from foxsisim.detector import Detector
 from foxsisim.source import Source
@@ -11,22 +11,14 @@ from foxsisim.plotting import plot
 if __name__ == '__main__':
 
     tstart = datetime.now()
-
-    source_distance = 1e4
-    source = Source(type='point', center=[0, 0, -source_distance], color=[1, 0, 0])
-
     # spectrum = lambda x: np.exp(-x)
     max_energy = 30.0
+    min_energy = 1.0
+    nrays = 500
 
-    def spectrum(z):
-        if (type(z) is not type([1])) and (type(z) is not type(np.array(1))):
-            x = np.array([z])
-        else:
-            x = np.array(z)
-        return np.piecewise(x, [x < 0, (x < max_energy) & (x > 0), (x >= max_energy)], [0, 1 / max_energy, 0])
-
-    source.loadSpectrum(spectrum)
-    plot(source)
+    energies = numpy.random.rand(nrays) * (max_energy - min_energy) + min_energy
+    source_distance = 1e4
+    source = Source(type='point', center=[0, 0, -source_distance], color=[1, 0, 0], spectrum=energies)
 
     radii = [5.15100, 4.90000, 4.65900, 4.42900, 4.21000, 4.00000, 3.79900]  # 7 shell radii
     seglen = 30
@@ -36,11 +28,9 @@ if __name__ == '__main__':
 
     detector = Detector(center=[0, 0, 230])  # focal point is at 230 by default
 
-    nrays = 500
     #  generate nrays from the source
     rays = source.generateRays(module.targetFront, nrays)
 
-    plot(source)
     plt.figure()
     plt.hist([ray.energy for ray in rays], normed=True, label='generated rays')
     plt.legend()

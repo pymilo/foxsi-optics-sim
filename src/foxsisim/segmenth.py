@@ -3,7 +3,7 @@ Created on Jul 8, 2011
 
 @author: pymilo
 '''
-from surface import Surface
+from foxsisim.surface import Surface
 from math import sin, cos, tan, atan2, pi, sqrt
 import numpy as np
 from numpy.linalg import norm
@@ -22,6 +22,8 @@ class Segmenth(Surface):
     the user may supply a value for r1, in which case the wide radius (r0)
     is automatically recomputed. When changing segment dimensions after
     instantiation, use the updateDims method.
+
+    Default tag is Hy.
     '''
 
     def __init__(self,
@@ -30,11 +32,12 @@ class Segmenth(Surface):
                  seglen=30.0,
                  ang=0.006,
                  r0=5.5,
-                 r1=None
+                 r1=None,
+                 tag='Hy'
                  ):
         '''
         Constructor
-        
+
         Parameters:
             base:    the center point of the wide end of the segment
             seglen:  the axial length of the segment
@@ -48,7 +51,8 @@ class Segmenth(Surface):
         self.focal = focal
         self.seglen = seglen
         self.ang = ang
-        ''' Vanspeybroeck and Chase Parameters '''
+        self.tag = tag
+        # Vanspeybroeck and Chase Parameters
         self.e = cos(4 * ang) * (1 + (tan(4 * ang) * tan(3 * ang)))
         self.d = focal * tan(4 * ang) * tan((4 * ang) - 3 * ang)
         self.updateDims(r0, r1)
@@ -71,7 +75,7 @@ class Segmenth(Surface):
         self.ch = self.seglen / (self.r0 ** 2 - self.r1 ** 2)
         # check vars
         if self.r0 <= 0 or self.r0 < self.r1 or self.r1 <= 0:
-            print 'error: invalid segment dimensions'
+            print('error: invalid segment dimensions')
 
     def inRange(self, u, v):
         '''
@@ -90,7 +94,7 @@ class Segmenth(Surface):
         def system(params):
             '''
             Returns the displacement of a given point on the surface with
-            the nearest point in the octant. Requires 3 parameters, but 
+            the nearest point in the octant. Requires 3 parameters, but
             only two are used: (u,v,_)
             '''
             pnt1 = self.getPoint(params[0], params[1])
@@ -110,19 +114,19 @@ class Segmenth(Surface):
             # fsolve sometimes returns nonexistant solutions when the octant is in the interior of the surface
             Y = system(X)
             if abs(Y[0]) + abs(Y[1]) + abs(Y[2]) > 0.0001:
-                if debug: print 'Solution found, but is nonzero'
+                if debug: print('Solution found, but is nonzero')
             elif not self.inRange(X[0], X[1]):
-                if debug: print 'Solution found, but outside of surface\'s parameter range:'
+                if debug: print('Solution found, but outside of surface\'s parameter range:')
             else:
                 valid = True
-                if debug: print 'Valid solution found:'
+                if debug: print('Valid solution found:')
             if debug:
-                print '[u,v,_] = ', X
-                print '[x,y,z] = ', self.getPoint(X[0], X[1])
+                print('[u,v,_] = '), X
+                print('[x,y,z] = '), self.getPoint(X[0], X[1])
         # no solution found
         else:
-            if debug: print 'No solution found: ', mesg
-            if debug: print 'Last iteration: ', X
+            if debug: print('No solution found: '), mesg
+            if debug: print('Last iteration: '), X
 
         return valid
 
@@ -158,7 +162,7 @@ class Segmenth(Surface):
             if not ray.inRange(X[2]):
 
                 # debug message
-                if debug: print 'Segment: first solution out of range. Trying again.'
+                if debug: print('Segment: first solution out of range. Trying again.')
 
                 # ray can intersect at most twice, so create a second guess
                 tsup = 2 * self.seglen
@@ -170,20 +174,20 @@ class Segmenth(Surface):
         result = None
         if(ier == 1):
             if not self.inRange(X[0], X[1]):
-                if debug: print 'Segment: final solution out of surface parameter range:'
+                if debug: print('Segment: final solution out of surface parameter range:')
             elif not ray.inRange(X[2]):
-                if debug: print 'Segment: final solution out of ray parameter range:'
+                if debug: print('Segment: final solution out of ray parameter range:')
             else:
-                if debug: print 'Segment: valid solution found:'
+                if debug: print('Segment: valid solution found:')
                 result = X
             if debug:
-                print '   [u,v,t] = ', X
-                print '   [x,y,z] = ', self.getPoint(X[0], X[1])
+                print('   [u,v,t] = '), X
+                print('   [x,y,z] = '), self.getPoint(X[0], X[1])
         # no solution found
         else:
             if debug:
-                print 'Segment: no solution found: ', mesg
-                print '   [u,v,t] = ', X
+                print('Segment: no solution found: '), mesg
+                print('   [u,v,t] = '), X
 
         return result
 
@@ -233,7 +237,7 @@ class Segmenth(Surface):
 
     def plot2D(self, axes, color='b'):
         '''
-        Plots a 2d cross section of the segment 
+        Plots a 2d cross section of the segment
         '''
         axes.plot((self.base[2], self.base[2] + self.seglen), (self.r0, self.r1), '-' + color)
         axes.plot((self.base[2], self.base[2] + self.seglen), (-self.r0, -self.r1), '-' + color)
@@ -256,8 +260,8 @@ class Segmenth(Surface):
     def targetFront(self, a, b):
         '''
         Takes two list arguments of equal size, the elements of which range from 0 to 1.
-        Returns an array of points that exist on the circle defined by the wide end of 
-        the segment. 
+        Returns an array of points that exist on the circle defined by the wide end of
+        the segment.
         '''
         n = len(a)
         pnts = np.zeros((n, 3))
@@ -272,8 +276,8 @@ class Segmenth(Surface):
     def targetBack(self, a, b):
         '''
         Takes two list arguments of equal size, the elements of which range from 0 to 1.
-        Returns an array of points that exist on the circle defined by the small end of 
-        the segment. 
+        Returns an array of points that exist on the circle defined by the small end of
+        the segment.
         '''
         n = len(a)
         pnts = np.zeros((n, 3))

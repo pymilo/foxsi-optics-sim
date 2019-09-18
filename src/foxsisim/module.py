@@ -3,14 +3,14 @@ Created on Jul 19, 2011
 
 @author: rtaylor
 '''
-from segment import Segment
-from shell import Shell
-from circle import Circle
-from mymath import reflect, calcShellAngle
+from foxsisim.segment import Segment
+from foxsisim.shell import Shell
+from foxsisim.circle import Circle
+from foxsisim.mymath import reflect, calcShellAngle
 from math import tan, atan, cos, sqrt
 from numpy.linalg import norm
 
-debug = False
+
 
 class Module:
     '''
@@ -61,11 +61,11 @@ class Module:
             if core_radius is None:
                 r0 = self.shells[-1].front.r0
                 r1 = r0 - seglen * tan(4 * angles[-1])
-                #ang = atan((r0 - r1) / (2 * seglen))
+                # ang = atan((r0 - r1) / (2 * seglen))
             else:
                 r0 = core_radius
                 r1 = core_radius
-            #self.core = Segment(base=base, seglen=2 * seglen, ang=0, r0=r0)
+            # self.core = Segment(base=base, seglen=2 * seglen, ang=0, r0=r0)
             self.coreFaces = [Circle(center=base, normal=[0, 0, 1], radius=r0),
                               Circle(center=[base[0], base[1],
                                              base[2] + 2 * seglen],
@@ -89,16 +89,16 @@ class Module:
         surfaces = []
         for shell in self.shells:
             surfaces.extend(shell.getSurfaces())
-        #surfaces.append(self.core)
+        # surfaces.append(self.core)
         surfaces.extend(self.coreFaces)
-        return(surfaces)
+        return (surfaces)
 
     def passRays(self, rays, robust=False):
         '''
         Takes an array of rays and passes them through the front end of
         the module.
         '''
-        # print 'Module: passing ',len(rays),' rays'
+        # print('Module: passing ',len(rays),' rays')
 
         # get all module surfaces
         allSurfaces = self.getSurfaces()
@@ -111,7 +111,7 @@ class Module:
             # innermost shell
             if i == len(self.shells) - 1:
                 regions[i] = shell.getSurfaces()
-                #regions[i].append(self.core)
+                # regions[i].append(self.core)
             else:
                 # outer shell (reflective side facing region)
                 regions[i] = shell.getSurfaces()
@@ -119,31 +119,32 @@ class Module:
                 regions[i].extend(self.shells[i + 1].getSurfaces())
 
         for ray in rays:
+            # print(ray.des)
             if self.shield is not None:
                 # skip rays that hit a core face
                 if ray.pos[2] < self.coreFaces[0].center[2]:
                     sol = self.coreFaces[0].rayIntersect(ray)
                     if sol is not None:
-                        if debug:
-                            print("ray hit face 0")
+                        # print("ray hit face 0")
                         ray.pos = ray.getPoint(sol[2])
                         ray.bounces += 1
                         ray.dead = True
                         ray.des = ray.pos
                         ray.hist.append(ray.pos)
+                        ray.update_tag(self.coreFaces[0].tag)
                         continue
                     else:
                         ray.moveToZ(self.coreFaces[0].center[2])
                 elif ray.pos[2] > self.coreFaces[1].center[2]:
                     sol = self.coreFaces[1].rayIntersect(ray)
                     if sol is not None:
-                        if debug:
-                            print("ray hit face 1")
+                        # print("ray hit face 1")
                         ray.pos = ray.getPoint(sol[2])
                         ray.bounces += 1
                         ray.dead = True
                         ray.des = ray.pos
                         ray.hist.append(ray.pos)
+                        ray.update_tag(self.coreFaces[1].tag)
                         continue
                     else:
                         ray.moveToZ(self.coreFaces[1].center[2])
@@ -175,14 +176,13 @@ class Module:
                     ray.pos = ray.getPoint(bestSol[2])
                     ray.hist.append(ray.pos)
                     ray.bounces += 1
-                    if debug:
-                        print("%i ray bounce number %i" % (ray.num, ray.bounces))
+                    ray.update_tag(bestSurf.tag)
+                    #print("%i ray bounce number %i" % (ray.num, ray.bounces))
 
                     x = reflect(ray.ori,
                                 bestSurf.getNormal(bestSol[0], bestSol[1]),
                                 ray.energy)
-                    if debug:
-                        print(x)
+                    # print('x = ',x)
                     # if reflected
                     if x is not None:
                         # update ori to unit vector reflection
@@ -190,8 +190,7 @@ class Module:
                     # otherwise, no reflection means ray is dead
                     else:
                         ray.dead = True
-                        if debug:
-                            print("%i ray killed by reflect" % ray.num)
+                        # print("%i ray killed by reflect" % ray.num)
                         break
 
                     # knowing the surface it has just hit, we can
@@ -213,6 +212,8 @@ class Module:
                 # if no intersection, ray can exit module
                 else:
                     break
+                    # print(ray.hist)
+                    # print(ray.des)
 
     def plot2D(self, axes, color='b'):
         '''
@@ -220,18 +221,17 @@ class Module:
         '''
         for shell in self.shells:
             shell.plot2D(axes, color)
-        if debug:
-            print(self.coreFaces[0].center)
-            print(self.coreFaces[1].center)
+        # print(self.coreFaces[0].center)
+        # print(self.coreFaces[1].center)
         if self.shield is not None:
             # plot core
-            #self.core.plot2D(axes, color)
-            #base = self.core.base
+            # self.core.plot2D(axes, color)
+            # base = self.core.base
             r0 = self.coreFaces[0].radius
             r1 = self.coreFaces[1].radius
             z0 = self.coreFaces[0].center[2]
             z1 = self.coreFaces[1].center[2]
-            #seglen = self.core.seglen
+            # seglen = self.core.seglen
             axes.plot((z0, z0), (r0, -r0), '-' + color)
             axes.plot((z1, z1), (r1, -r1), '-' + color)
 
@@ -265,7 +265,7 @@ class Module:
         '''
         # must modify 'a' so that we dont return points from the core
         r0 = self.shells[0].back.r1
-        r1 = self.core.r1
+        r1 = self.coreFaces[0].radius
         a0 = (r1 / r0) ** 2  # the 'a' value that gives r1=sqrt(a)*r0
         adiff = 1 - a0
         for i in range(len(a)):
