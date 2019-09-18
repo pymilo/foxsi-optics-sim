@@ -123,7 +123,7 @@ class Detector(Plane):
                     ray.dead = True
                     ray.bounces += 0
                     ray.hist.append(ray.pos)
-                    #print(self.tag)
+                    #print(self.tag) ## uncomment for debugging purposes
                     ray.update_tag(self.tag)
                     self.rays.append(ray)
 
@@ -164,7 +164,7 @@ class Detector(Plane):
                     counts[ypix, xpix] += 1
             else:
                 counts[ypix, xpix] += 1
-                
+
         # average the colors
         for x in range(dims[0]):
             for y in range(dims[1]):
