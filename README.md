@@ -1,6 +1,8 @@
 Grazing-Incidence Optics Simulation Tool
 ----------------------------------------
 
+[![DOI](https://zenodo.org/badge/11820259.svg)](https://zenodo.org/badge/latestdoi/11820259)
+
 ![Measured Ghost Pattern](gallery/gallery_example1.png)
 
 Introduction
