@@ -12,5 +12,6 @@ investigate various properties of Wolter-1 optics.
 |  [Gallery #4](gallery_example4.md) | The effect on the spectrum of an off-axis source |
 |  [Gallery #5](gallery_example5.md) | Blocker size versus the total ghost ray flux |
 |  [Gallery #6](gallery_example6.md) | Dependence of ghost ray flux versus mirror spacing |
+|  [Gallery #7](gallery_example7.md) | FOXSI-SMEX Simulated ghost rays as a function of off axis angle |
 
 
