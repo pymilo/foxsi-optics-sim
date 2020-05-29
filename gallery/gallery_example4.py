@@ -27,7 +27,7 @@ sns.set_context('paper')
 sns.set_style('dark')
 
 n = 1000        ## Number of rays
-SaveFolder = '/Users/Kamilobu/Desktop/test/' ## Path of the SaveFolder
+SaveFolder = './' ## Path of the SaveFolder
 
 fbr = 3.09671       ## Front blocker radius [cm].
 rbr = 2.62          ## Rear blocker radius [cm].

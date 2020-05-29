@@ -3,14 +3,13 @@ Created on Jul 19, 2011
 
 @author: rtaylor
 '''
-from foxsisim.segment import Segment
+from foxsisim.annulus import Annulus
 from foxsisim.shell import Shell
 from foxsisim.circle import Circle
 from foxsisim.mymath import reflect, calcShellAngle
-from math import tan, atan, cos, sqrt
+from math import tan
 from numpy.linalg import norm
-
-
+from numpy import zeros
 
 class Module:
     '''
@@ -25,7 +24,8 @@ class Module:
                  angles=None,
                  conic=False,
                  shield=True,
-                 core_radius=None
+                 core_radius=None,
+                 thickness=None
                  ):
         '''
         Constructor
@@ -78,6 +78,22 @@ class Module:
         else:
             self.shield = None
 
+        # sieve effect :
+        if thickness is None:
+            self.thickness = zeros(len(radii)).tolist()
+        elif isinstance(thickness, (tuple, list)) and len(thickness)==len(radii) :
+            self.thickness = thickness
+        else:
+            print('Error: Keyword thickness must have same length as radii')
+        self.sieveFront = []
+        self.sieveBack  = []
+        for thick, shell in zip(self.thickness, self.shells):
+            self.sieveFront.append(Annulus(center=base, normal=[0, 0, 1],
+                                           radius=shell.front.r0,thickness=thick))
+            self.sieveBack.append(Annulus(center=[base[0], base[1], base[2] + 2 * seglen],
+                                          normal=[0, 0, -1],
+                                          radius=shell.back.r1,thickness=thick))
+
     def getDims(self):
         '''
         Returns the module's dimensions:
@@ -124,8 +140,19 @@ class Module:
                 regions[i].extend(self.shells[i + 1].getSurfaces())
 
         for ray in rays:
-            # move ray to the front of the optics
-            ray.moveToZ(self.coreFaces[0].center[2])
+            # Does the ray hit the front sieve?
+            for annulus in self.sieveFront:
+                sol = annulus.rayIntersect(ray)
+                if sol is not None:
+                    ray.pos = ray.getPoint(sol[2])
+                    ray.dead = True
+                    ray.des = ray.pos
+                    ray.hist.append(ray.pos)
+                    ray.update_tag(annulus.tag)
+                    continue
+                else:
+                    # move ray to the front of the optics
+                    ray.moveToZ(self.coreFaces[0].center[2])
 
             # reset surfaces
             surfaces = [s for s in allSurfaces]
@@ -203,6 +230,17 @@ class Module:
                 ray.hist.append(ray.pos)
                 ray.update_tag(self.coreFaces[1].tag)
                 continue
+            # Does the ray hit the back sieve?
+            for annulus in self.sieveBack:
+                sol = annulus.rayIntersect(ray)
+                if sol is not None:
+                    #print("ray hit back sieve")
+                    ray.pos = ray.getPoint(sol[2])
+                    ray.dead = True
+                    ray.des = ray.pos
+                    ray.hist.append(ray.pos)
+                    ray.update_tag(annulus.tag)
+                    continue
             else:
                 ray.moveToZ(self.coreFaces[1].center[2])
                 #ray.hist.append(ray.pos)

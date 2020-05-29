@@ -5,6 +5,6 @@ from foxsisim.plotting import plot
 
 if __name__ == '__main__':
 
-    r = ref.Reflectivity(material='Ni')
+    r = ref.Reflectivity(material='Ir')
     plot(r)
-    plt.show()
+    plt.show(block=True)

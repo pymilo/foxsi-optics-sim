@@ -34,4 +34,4 @@ if __name__ == '__main__':
     module.plot3D(axes2, 'b')
 
     # show figures
-    plt.show()
+    plt.show(block=True)

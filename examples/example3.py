@@ -51,4 +51,4 @@ if __name__ == '__main__':
     plot(detector)
     
     # show
-    plt.show()
+    plt.show(block=True)

@@ -31,7 +31,7 @@ from foxsisim.module import Module
 from foxsisim.detector import Detector
 
 n = 1000        ## Number of rays
-SaveFolder = '/Users/Kamilobu/Desktop/test/' ## Path of the SaveFolder
+SaveFolder = './' ## Path of the SaveFolder
 
 fbr = 3.09671       ## Front blocker radius [cm].
 rbr = 2.62          ## Rear blocker radius [cm].
@@ -72,7 +72,6 @@ All_Prays.append(Prays)
 All_Srays.append(Srays)
 
 sim_scale = 1.0    # 1cm = 17.4 arcmin
-#sim_scale = 17.4    # 1cm = 17.4 arcmin
 
 #Hyperboloid
 Hx, Hy = [], []

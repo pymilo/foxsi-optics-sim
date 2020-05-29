@@ -20,7 +20,8 @@ from foxsisim.module import Module
 from foxsisim.util import load_rays, save_rays
 from foxsisim.detector import Detector
 
-n = 100                 ## number of rays
+n = 100                ## number of rays
+SaveFolder = './'      ## Path of the SaveFolder
 Sdist = -1.5e13        ## cm
 offaxisAngle = 0.0     ## arcmin
 

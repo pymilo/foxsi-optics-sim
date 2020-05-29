@@ -27,7 +27,7 @@ from foxsisim.module import Module
 from foxsisim.detector import Detector
 
 n = 1000        ## Number of rays
-SaveFolder = '/Users/Kamilobu/Desktop/test/' ## Path of the SaveFolder
+SaveFolder = './' ## Path of the SaveFolder
 
 fbr = 3.09671       ## Front blocker radius [cm].
 rbr = 2.62          ## Rear blocker radius [cm].
@@ -48,7 +48,6 @@ for angle in offaxisAngles:
     module = Module(radii = [5.151,4.9,4.659,4.429,4.21,4.0,3.799,3.59,3.38,3.17], core_radius=(fbr,rbr))
     rays = source.generateRays(module.targetFront,n)
     module.passRays(rays)
-    #Rrays = [ray for ray in rays if (ray.tag != 'Source')] #kills the passthrough rays
     #save_rays(rays,filename=SaveFolder+'rays_Angle_=_'+str(angle)+'.csv')
 
     # Create detector :
@@ -126,5 +125,4 @@ for i, angle in enumerate(offaxisAngles):
                 textcoords='offset points',arrowprops=dict(
                 arrowstyle='simple,tail_width=0.3,head_width=0.8,head_length=0.8',
                 facecolor='grey',ec='grey'))
-    #ax.add_patch(patches.Circle((0,0),np.sqrt(0.48),fill=False,linewidth=0.5,alpha=0.5))
     plt.savefig(SaveFolder+'My_gallery_example2.png')

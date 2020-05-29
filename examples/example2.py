@@ -36,4 +36,4 @@ if __name__ == '__main__':
     scatterHist(detectorRays,fig2)
 
     # show
-    plt.show()
+    plt.show(block=True)

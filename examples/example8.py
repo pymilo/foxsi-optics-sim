@@ -34,4 +34,4 @@ if __name__ == '__main__':
 
     plot(detector)
     scatterHist(rays)
-    plt.show()
+    plt.show(block=True)

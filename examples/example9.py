@@ -34,7 +34,7 @@ if __name__ == '__main__':
     plt.figure()
     plt.hist([ray.energy for ray in rays], normed=True, label='generated rays')
     plt.legend()
-    plt.show()
+    plt.show(block=True)
 
     # pass rays through module
     module.passRays(rays, robust=True)
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     rays_on_detector = len(detector.rays)
 
     plot(detector, energy_range=[0, 15])
-    plt.show()
+    plt.show(block=True)
 
     print('Number of rays on Detector ' + str(rays_on_detector))
     print('Time total: ' + str((datetime.now() - tstart).seconds) + ' seconds')
